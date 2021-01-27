@@ -1,5 +1,9 @@
 function [ LPred ] = kNN(X, k, XTrain, LTrain)
-% KNN Your implementation of the kNN algorithm
+% KNN Classifies all samples of X after the k-closest nearest neighbours.
+% If two clases has an equal amout of near neighbours, the mean distance of
+% each class samples decides. If the mean distance is the same, the closest
+% single sample dicedes.
+%
 %    Inputs:
 %              X      - Samples to be classified (matrix)
 %              k      - Number of neighbors (scalar)
@@ -26,8 +30,8 @@ IndMat = zeros(k, NSamples);                % The corresponding indices of DistM
 for i=1:NSamples
     
     [dist, ind] = sort(M(:,i));
-    DistMat(:,i) = dist(2:k+1); % 2:k+1 because the smallest distance is the distance to itself
-    IndMat(:,i) = ind(2:k+1);
+    DistMat(:,i) = dist(1:k);
+    IndMat(:,i) = ind(1:k);
     
 end
 
@@ -69,14 +73,26 @@ for i=1:length(SpecCase)
     for j=1:length(SameFreqClass)
 
         % Calculate the mean of the samples of each class
-        m = mean(DistMat(ClassMat(:, SpecCase(i)) == SameFreqClass(j), SpecCase(i)));
+        classRowInd = ClassMat(:, SpecCase(i)) == SameFreqClass(j);
+        d = DistMat(classRowInd, SpecCase(i));
+        m = mean(d);
         
-        % TODO: There is a weakness in the logic here. If the mean distances
-        % between class samples are the same, it will be classified as the
-        % "lowest" class index. Need to add more logic...
+        % Classifies as the class with lowest mean distance from target. If
+        % the distance is the same, it classifies as the class with the
+        % closest sample of those classes.
         if(m < minDist)
             minDist = m;
             minInd = SameFreqClass(j);
+            
+        elseif(m == minDist)
+        
+            classRowIndOld = ClassMat(:, SpecCase(i)) == minInd;
+            dOld = DistMat(classRowIndOld, SpecCase(i));
+            
+            if(min(d) < min(dOld))
+                minInd = SameFreqClass(j);
+            end
+            
         end
         
     end
