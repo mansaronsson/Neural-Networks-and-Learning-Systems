@@ -32,10 +32,10 @@ selectAtRandom = true;          % true = select samples at random, false = selec
 % XBinComb = combineBins(XBins, [1,2,3]);
 
 % Add your own code to setup data for training and test here
-XTrain = XBins{1};
-LTrain = LBins{1};
-XTest  = XBins{2};
-LTest  = LBins{2};
+XTrain = combineBins(XBins, 1:numBins-1);
+LTrain = combineBins(LBins, 1:numBins-1);
+XTest  = XBins{numBins};
+LTest  = LBins{numBins};
 
 %% Use kNN to classify data
 %  Note: you have to modify the kNN() function yourself.

@@ -1,8 +1,9 @@
 function [ acc ] = calcAccuracy( cM )
 % CALCACCURACY Takes a confusion matrix amd calculates the accuracy
 
-% Add your own code here
-acc = 0;
+% **************** Our code ************************
+
+acc = trace(cM) / sum(cM, 'all');
 
 end
 
