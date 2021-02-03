@@ -1,13 +1,11 @@
-%% This script will help you test out your kNN code
-
-%% Select which data to use:
-
+%This script will help you test out your kNN code
+%Select which data to use:
 % 1 = dot cloud 1
 % 2 = dot cloud 2
 % 3 = dot cloud 3
 % 4 = OCR data
 
-dataSetNr = 1; % Change this to load new data 
+dataSetNr = 4; % Change this to load new data 
 
 % X - Data samples
 % D - Desired output from classifier for each sample
@@ -15,12 +13,11 @@ dataSetNr = 1; % Change this to load new data
 [X, D, L] = loadDataSet( dataSetNr );
 
 % You can plot and study dataset 1 to 3 by running:
-% plotCase(X,D)
+plotCase(X,D)
 
-%% Select a subset of the training samples
-
-numBins = 2;                    % Number of bins you want to devide your data into
-numSamplesPerLabelPerBin = 100; % Number of samples per label per bin, set to inf for max number (total number is numLabels*numSamplesPerBin)
+% Select a subset of the training samples
+numBins = 10;                    % Number of bins you want to devide your data into
+numSamplesPerLabelPerBin = inf; % Number of samples per label per bin, set to inf for max number (total number is numLabels*numSamplesPerBin)
 selectAtRandom = true;          % true = select samples at random, false = select the first features
 
 [XBins, DBins, LBins] = selectTrainingSamples(X, D, L, numSamplesPerLabelPerBin, numBins, selectAtRandom);
@@ -32,35 +29,54 @@ selectAtRandom = true;          % true = select samples at random, false = selec
 % XBinComb = combineBins(XBins, [1,2,3]);
 
 % Add your own code to setup data for training and test here
-XTrain = combineBins(XBins, 1:numBins-1);
-LTrain = combineBins(LBins, 1:numBins-1);
-XTest  = XBins{numBins};
-LTest  = LBins{numBins};
+XTest  = XBins{1};
+LTest  = LBins{1};
 
-%% Use kNN to classify data
-%  Note: you have to modify the kNN() function yourself.
+acc = zeros(numBins-1, 1);
 
-% Set the number of neighbors
-k = 1;
+for i=1:numBins-1 % Starts at 2 because index 1 is used as test data
+    trainingRange = 2:numBins;
+    trainingRange(i) = [];
+    
+    XTrain = combineBins(XBins, trainingRange);
+    LTrain = combineBins(LBins, trainingRange);
+    XVal = XBins{i};
+    LVal = LBins{i};
+    
 
-% Classify training data
-LPredTrain = kNN(XTrain, k, XTrain, LTrain);
-% Classify test data
-LPredTest  = kNN(XTest , k, XTrain, LTrain);
+    %Use kNN to classify data
+    %Note: you have to modify the kNN() function yourself.
 
-%% Calculate The Confusion Matrix and the Accuracy
-%  Note: you have to modify the calcConfusionMatrix() and calcAccuracy()
-%  functions yourself.
+    % Set the number of neighbors
+%     minK = 1;
+%     maxK = 100;
+%     k = findK(XTrain, XVal, LTrain, LVal, minK, maxK)
 
-% The confucionMatrix
-cM = calcConfusionMatrix(LPredTest, LTest)
 
-% The accuracy
-acc = calcAccuracy(cM)
+    % Classify training data
+    LPredTrain = kNN(XTrain, i, XTrain, LTrain);
+    % Classify test data
+    LPredTest  = kNN(XTest , i, XTrain, LTrain);
 
-%% Plot classifications
-%  Note: You should not have to modify this code
+    % Calculate The Confusion Matrix and the Accuracy
+    % Note: you have to modify the calcConfusionMatrix() and calcAccuracy()
+    % functions yourself.
 
+    % The confucionMatrix
+    cM = calcConfusionMatrix(LPredTest, LTest);
+
+    % The accuracy
+    acc(i) = calcAccuracy(cM);
+
+
+end
+
+x = 1:numBins-1;
+figure, plot(x, acc)
+[~,k] = max(acc) 
+
+% Plot classifications
+% Note: You should not have to modify this code
 if dataSetNr < 4
     plotResultDots(XTrain, LTrain, LPredTrain, XTest, LTest, LPredTest, 'kNN', [], k);
 else
