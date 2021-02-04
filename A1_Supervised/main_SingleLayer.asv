@@ -7,7 +7,7 @@
 % 3 = dot cloud 3
 % 4 = OCR data
 
-dataSetNr = 4; % Change this to load new data 
+dataSetNr = 1; % Change this to load new data 
 
 % X - Data samples
 % D - Desired output from classifier for each sample
@@ -40,6 +40,7 @@ LTest  = LBins{numBins};
 %  Note that the bias must be the last feature for the plot code to work
 
 % The training data
+
 XTrain(:, size(XTrain,2)+1) = ones(size(XTrain,1),1);
 
 % The test data
@@ -49,13 +50,9 @@ XTest(:, size(XTest,2)+1) = ones(size(XTest,1),1);
 %  Note: You need to modify trainSingleLayer() and runSingleLayer()
 %  in order to train the network
 
-numIterations = 5000;     % 1,2,3
-learningRate  = 0.001;    % 1,2,3
-% numIterations = 10000;    % 4
-% learningRate  = 0.00014;  % 4
-
-NClasses = length(unique(L));
-W0 = rand(size(XTrain,2), NClasses); % Change this, initialize your weight matrix W
+numIterations = 100;    % Change this, number of iterations (epochs)
+learningRate  = 0.01;   % Change this, your learning rate
+W0 = rand(); % Change this, initialize your weight matrix W
 
 % Run training loop
 tic;
