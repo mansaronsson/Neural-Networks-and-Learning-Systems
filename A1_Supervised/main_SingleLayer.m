@@ -49,13 +49,13 @@ XTest(:, size(XTest,2)+1) = ones(size(XTest,1),1);
 %  Note: You need to modify trainSingleLayer() and runSingleLayer()
 %  in order to train the network
 
-numIterations = 5000;     % 1,2,3
-learningRate  = 0.001;    % 1,2,3
-% numIterations = 10000;    % 4
-% learningRate  = 0.00014;  % 4
+% numIterations = 1200;     % 1,2,3
+% learningRate  = 0.001;    % 1,2,3
+numIterations = 10000;    % 4
+learningRate  = 0.00014;  % 4
 
 NClasses = length(unique(L));
-W0 = rand(size(XTrain,2), NClasses); % Change this, initialize your weight matrix W
+W0 = randn(size(XTrain,2), NClasses)/100; % Change this, initialize your weight matrix W
 
 % Run training loop
 tic;
