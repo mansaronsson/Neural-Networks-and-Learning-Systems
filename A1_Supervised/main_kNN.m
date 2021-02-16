@@ -16,7 +16,10 @@ dataSetNr = 4; % Change this to load new data
 plotCase(X,D)
 
 % Select a subset of the training samples
-numBins = 10;                    % Number of bins you want to devide your data into
+% The algorithm will test numBins-numTestBins different values of k
+% starting at k=1
+numBins = 20;                   % Number of bins you want to devide your data into
+numTestBins = 5;                % Number of bins that should be used as test data
 numSamplesPerLabelPerBin = inf; % Number of samples per label per bin, set to inf for max number (total number is numLabels*numSamplesPerBin)
 selectAtRandom = true;          % true = select samples at random, false = select the first features
 
@@ -29,51 +32,59 @@ selectAtRandom = true;          % true = select samples at random, false = selec
 % XBinComb = combineBins(XBins, [1,2,3]);
 
 % Add your own code to setup data for training and test here
-XTest  = XBins{1};
-LTest  = LBins{1};
 
-acc = zeros(numBins-1, 1);
+XTest  = combineBins(XBins, numBins-numTestBins+1:numBins);
+LTest  = combineBins(LBins, numBins-numTestBins+1:numBins);
 
-for i=1:numBins-1 % Starts at 2 because index 1 is used as test data
-    trainingRange = 2:numBins;
+acc = zeros(numBins-numTestBins, 1);
+
+for i=1:numBins-numTestBins % Starts at 2 because index NTestBins is used as test data
+    trainingRange = 1:numBins-numTestBins;
     trainingRange(i) = [];
     
     XTrain = combineBins(XBins, trainingRange);
     LTrain = combineBins(LBins, trainingRange);
     XVal = XBins{i};
     LVal = LBins{i};
-    
-
-    %Use kNN to classify data
-    %Note: you have to modify the kNN() function yourself.
-
-    % Set the number of neighbors
-%     minK = 1;
-%     maxK = 100;
-%     k = findK(XTrain, XVal, LTrain, LVal, minK, maxK)
-
 
     % Classify training data
     LPredTrain = kNN(XTrain, i, XTrain, LTrain);
     % Classify test data
-    LPredTest  = kNN(XTest , i, XTrain, LTrain);
-
-    % Calculate The Confusion Matrix and the Accuracy
-    % Note: you have to modify the calcConfusionMatrix() and calcAccuracy()
-    % functions yourself.
+    LPredVal  = kNN(XVal , i, XTrain, LTrain);
 
     % The confucionMatrix
-    cM = calcConfusionMatrix(LPredTest, LTest);
+    cM = calcConfusionMatrix(LPredVal, LVal);
 
     % The accuracy
-    acc(i) = calcAccuracy(cM);
-
+    accuracy = calcAccuracy(cM);
+    
+    % Saves the training data the yielded the best result
+    if(accuracy > max(acc))
+        bestXTrain = XTrain;
+        bestLTrain = LTrain;
+        bestLPredTrain = LPredTrain;
+    end
+    
+    acc(i) = accuracy;
 
 end
 
-x = 1:numBins-1;
+x = 1:numBins-numTestBins;
 figure, plot(x, acc)
-[~,k] = max(acc) 
+title('Accuracy during training');
+xlabel('k');
+ylabel('Accuracy');
+[~,k] = max(acc)
+
+% Reassign to the training data the yielded the best tesult
+XTrain = bestXTrain;
+LTrain = bestLTrain;
+LPredTrain = bestLPredTrain;
+
+% Accuracy on test data
+LPredTest  = kNN(XTest , k, XTrain, LTrain);
+cM = calcConfusionMatrix(LPredTest, LTest);
+accuracy = calcAccuracy(cM)
 
 % Plot classifications
 % Note: You should not have to modify this code

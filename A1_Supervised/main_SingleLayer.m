@@ -7,7 +7,7 @@
 % 3 = dot cloud 3
 % 4 = OCR data
 
-dataSetNr = 4; % Change this to load new data 
+dataSetNr = 1; % Change this to load new data 
 
 % X - Data samples
 % D - Desired output from classifier for each sample
@@ -16,7 +16,7 @@ dataSetNr = 4; % Change this to load new data
 
 %% Select a subset of the training samples
 
-numBins = 2;                    % Number of Bins you want to devide your data into
+numBins = 5;                    % Number of Bins you want to devide your data into
 numSamplesPerLabelPerBin = inf; % Number of samples per label per bin, set to inf for max number (total number is numLabels*numSamplesPerBin)
 selectAtRandom = true;          % true = select samples at random, false = select the first features
 
@@ -29,9 +29,10 @@ selectAtRandom = true;          % true = select samples at random, false = selec
 % XBinComb = combineBins(XBins, [1,2,3]);
 
 % Add your own code to setup data for training and test here
-XTrain = XBins{1:numBins-1};
-DTrain = DBins{1:numBins-1};
-LTrain = LBins{1:numBins-1};
+XTrain = combineBins(XBins, 1:numBins-1);
+DTrain = combineBins(DBins, 1:numBins-1);
+LTrain = combineBins(LBins, 1:numBins-1);
+
 XTest  = XBins{numBins};
 DTest  = DBins{numBins};
 LTest  = LBins{numBins};
@@ -49,10 +50,8 @@ XTest(:, size(XTest,2)+1) = ones(size(XTest,1),1);
 %  Note: You need to modify trainSingleLayer() and runSingleLayer()
 %  in order to train the network
 
-% numIterations = 1200;     % 1,2,3
-% learningRate  = 0.001;    % 1,2,3
-numIterations = 10000;    % 4
-learningRate  = 0.00014;  % 4
+numIterations = 1200;     % 1
+learningRate  = 0.001;    % 1
 
 NClasses = length(unique(L));
 W0 = randn(size(XTrain,2), NClasses)/100; % Change this, initialize your weight matrix W
