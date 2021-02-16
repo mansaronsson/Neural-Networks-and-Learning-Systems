@@ -7,7 +7,7 @@
 % 3 = dot cloud 3
 % 4 = OCR data
 
-dataSetNr = 4; % Change this to load new data 
+dataSetNr = 3; % Change this to load new data 
 
 % X - Data samples
 % D - Desired output from classifier for each sample
@@ -16,7 +16,7 @@ dataSetNr = 4; % Change this to load new data
 
 %% Select a subset of the training features
 
-numBins = 5;                    % Number of Bins you want to devide your data into
+numBins = 50;                    % Number of Bins you want to devide your data into
 numSamplesPerLabelPerBin = inf; % Number of samples per label per bin, set to inf for max number (total number is numLabels*numSamplesPerBin)
 selectAtRandom = true;          % true = select features at random, false = select the first features
 
@@ -29,12 +29,22 @@ selectAtRandom = true;          % true = select features at random, false = sele
 % XBinComb = combineBins(XBins, [1,2,3]);
 
 % Add your own code to setup data for training and test here
-XTrain = XBins{1:numBins-1};
-DTrain = DBins{1:numBins-1};
-LTrain = LBins{1:numBins-1};
-XTest  = XBins{numBins};
-DTest  = DBins{numBins};
-LTest  = LBins{numBins};
+% XTrain = combineBins(XBins, 1:numBins-1);
+% DTrain = combineBins(DBins, 1:numBins-1);
+% LTrain = combineBins(LBins, 1:numBins-1);
+
+% XTest  = XBins{numBins};
+% DTest  = DBins{numBins};
+% LTest  = LBins{numBins};
+
+% Non-generalizable
+XTrain  = XBins{numBins};
+DTrain  = DBins{numBins};
+LTrain  = LBins{numBins};
+
+XTest = combineBins(XBins, 1:numBins-1);
+DTest = combineBins(DBins, 1:numBins-1);
+LTest = combineBins(LBins, 1:numBins-1);
 
 %% Modify the X Matrices so that a bias is added
 %  Note that the bias must be the last feature for the plot code to work
@@ -49,9 +59,22 @@ XTest(:, size(XTest,2)+1) = ones(size(XTest,1),1);
 %  Note: You need to modify trainMultiLayer() and runMultiLayer()
 %  in order to train the network
 
-numHidden     = 10;     % Change this, number of hidden neurons 
-numIterations = 150000;   % Change this, number of iterations (epochs)
-learningRate  = 0.005; % Change this, your learning rate
+% numHidden     = 6;    % 2
+% numIterations = 12000;   % 2
+% learningRate  = 0.05;   % 2
+
+% numHidden     = 8;    % 3
+% numIterations = 12000;   % 3
+% learningRate  = 0.1;   % 3
+
+% numHidden     = 64;    % 4
+% numIterations = 10000;   % 4
+% learningRate  = 0.05;   % 4
+
+% Non-generalizable
+numHidden     = 8;    
+numIterations = 2500;   
+learningRate  = 0.05;   
 
 NClasses = length(unique(L));
 W0 = randn(size(XTrain, 2), numHidden+1)/100; % Initialize your weight matrix W
