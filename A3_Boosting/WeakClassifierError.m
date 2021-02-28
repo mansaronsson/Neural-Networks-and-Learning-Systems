@@ -9,7 +9,6 @@ function E = WeakClassifierError(C, D, Y)
 % This is for your own benefit, since a loop will be too slow to use
 % with a reasonable amount of Haar features and training images.
 
-
-
+E = (C ~= Y) * D;
 end
 
