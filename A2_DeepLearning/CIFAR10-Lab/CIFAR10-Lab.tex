@@ -1,0 +1,2277 @@
+\documentclass[11pt]{article}
+
+    \usepackage[breakable]{tcolorbox}
+    \usepackage{parskip} % Stop auto-indenting (to mimic markdown behaviour)
+    
+    \usepackage{iftex}
+    \ifPDFTeX
+    	\usepackage[T1]{fontenc}
+    	\usepackage{mathpazo}
+    \else
+    	\usepackage{fontspec}
+    \fi
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % Maintain compatibility with old templates. Remove in nbconvert 6.0
+    \let\Oldincludegraphics\includegraphics
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionFormat{nocaption}{}
+    \captionsetup{format=nocaption,aboveskip=0pt,belowskip=0pt}
+
+    \usepackage{float}
+    \floatplacement{figure}{H} % forces figures to be placed at the correct location
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+    \usepackage[mathletters]{ucs} % Extended unicode (utf-8) support
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics 
+                         % to support a larger range
+    \makeatletter % fix for old versions of grffile with XeLaTeX
+    \@ifpackagelater{grffile}{2019/11/01}
+    {
+      % Do nothing on new versions
+    }
+    {
+      \def\Gread@@xetex#1{%
+        \IfFileExists{"\Gin@base".bb}%
+        {\Gread@eps{\Gin@base.bb}}%
+        {\Gread@@xetex@aux#1}%
+      }
+    }
+    \makeatother
+    \usepackage[Export]{adjustbox} % Used to constrain images to a maximum size
+    \adjustboxset{max size={0.9\linewidth}{0.9\paperheight}}
+
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    % The default LaTeX title has an obnoxious amount of whitespace. By default,
+    % titling removes some of it. It also provides customization options.
+    \usepackage{titling}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    \usepackage{mathrsfs}
+    
+
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+    \definecolor{ansi-default-inverse-fg}{HTML}{FFFFFF}
+    \definecolor{ansi-default-inverse-bg}{HTML}{000000}
+
+    % common color for the border for error outputs.
+    \definecolor{outerrorbackground}{HTML}{FFDFDF}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+    
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    
+    
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatibility definitions
+    \def\gt{>}
+    \def\lt{<}
+    \let\Oldtex\TeX
+    \let\Oldlatex\LaTeX
+    \renewcommand{\TeX}{\textrm{\Oldtex}}
+    \renewcommand{\LaTeX}{\textrm{\Oldlatex}}
+    % Document parameters
+    % Document title
+    \title{CIFAR10-Lab}
+    
+    
+    
+    
+    
+% Pygments definitions
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\expandafter\def\csname PY@tok@w\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\expandafter\def\csname PY@tok@c\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.74,0.48,0.00}{##1}}}
+\expandafter\def\csname PY@tok@k\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kt\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\expandafter\def\csname PY@tok@o\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@ow\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\expandafter\def\csname PY@tok@nb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nf\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@nc\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@nn\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@ne\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.82,0.25,0.23}{##1}}}
+\expandafter\def\csname PY@tok@nv\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@no\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nl\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.63,0.63,0.00}{##1}}}
+\expandafter\def\csname PY@tok@ni\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.60,0.60,0.60}{##1}}}
+\expandafter\def\csname PY@tok@na\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.49,0.56,0.16}{##1}}}
+\expandafter\def\csname PY@tok@nt\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nd\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\expandafter\def\csname PY@tok@s\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sd\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@si\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\expandafter\def\csname PY@tok@se\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sr\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\expandafter\def\csname PY@tok@ss\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@sx\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@m\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@gh\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@gu\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@gd\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@gi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.63,0.00}{##1}}}
+\expandafter\def\csname PY@tok@gr\endcsname{\def\PY@tc##1{\textcolor[rgb]{1.00,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@ge\endcsname{\let\PY@it=\textit}
+\expandafter\def\csname PY@tok@gs\endcsname{\let\PY@bf=\textbf}
+\expandafter\def\csname PY@tok@gp\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@go\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.53,0.53,0.53}{##1}}}
+\expandafter\def\csname PY@tok@gt\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\expandafter\def\csname PY@tok@err\endcsname{\def\PY@bc##1{\setlength{\fboxsep}{0pt}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}
+\expandafter\def\csname PY@tok@kc\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kd\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kn\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kr\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@bp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@fm\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@vc\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@vg\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@vi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@vm\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@sa\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sc\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@dl\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@s2\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sh\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@s1\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@mb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mf\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mh\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@il\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mo\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@ch\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cm\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cpf\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@c1\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cs\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % For linebreaks inside Verbatim environment from package fancyvrb. 
+    \makeatletter
+        \newbox\Wrappedcontinuationbox 
+        \newbox\Wrappedvisiblespacebox 
+        \newcommand*\Wrappedvisiblespace {\textcolor{red}{\textvisiblespace}} 
+        \newcommand*\Wrappedcontinuationsymbol {\textcolor{red}{\llap{\tiny$\m@th\hookrightarrow$}}} 
+        \newcommand*\Wrappedcontinuationindent {3ex } 
+        \newcommand*\Wrappedafterbreak {\kern\Wrappedcontinuationindent\copy\Wrappedcontinuationbox} 
+        % Take advantage of the already applied Pygments mark-up to insert 
+        % potential linebreaks for TeX processing. 
+        %        {, <, #, %, $, ' and ": go to next line. 
+        %        _, }, ^, &, >, - and ~: stay at end of broken line. 
+        % Use of \textquotesingle for straight quote. 
+        \newcommand*\Wrappedbreaksatspecials {% 
+            \def\PYGZus{\discretionary{\char`\_}{\Wrappedafterbreak}{\char`\_}}% 
+            \def\PYGZob{\discretionary{}{\Wrappedafterbreak\char`\{}{\char`\{}}% 
+            \def\PYGZcb{\discretionary{\char`\}}{\Wrappedafterbreak}{\char`\}}}% 
+            \def\PYGZca{\discretionary{\char`\^}{\Wrappedafterbreak}{\char`\^}}% 
+            \def\PYGZam{\discretionary{\char`\&}{\Wrappedafterbreak}{\char`\&}}% 
+            \def\PYGZlt{\discretionary{}{\Wrappedafterbreak\char`\<}{\char`\<}}% 
+            \def\PYGZgt{\discretionary{\char`\>}{\Wrappedafterbreak}{\char`\>}}% 
+            \def\PYGZsh{\discretionary{}{\Wrappedafterbreak\char`\#}{\char`\#}}% 
+            \def\PYGZpc{\discretionary{}{\Wrappedafterbreak\char`\%}{\char`\%}}% 
+            \def\PYGZdl{\discretionary{}{\Wrappedafterbreak\char`\$}{\char`\$}}% 
+            \def\PYGZhy{\discretionary{\char`\-}{\Wrappedafterbreak}{\char`\-}}% 
+            \def\PYGZsq{\discretionary{}{\Wrappedafterbreak\textquotesingle}{\textquotesingle}}% 
+            \def\PYGZdq{\discretionary{}{\Wrappedafterbreak\char`\"}{\char`\"}}% 
+            \def\PYGZti{\discretionary{\char`\~}{\Wrappedafterbreak}{\char`\~}}% 
+        } 
+        % Some characters . , ; ? ! / are not pygmentized. 
+        % This macro makes them "active" and they will insert potential linebreaks 
+        \newcommand*\Wrappedbreaksatpunct {% 
+            \lccode`\~`\.\lowercase{\def~}{\discretionary{\hbox{\char`\.}}{\Wrappedafterbreak}{\hbox{\char`\.}}}% 
+            \lccode`\~`\,\lowercase{\def~}{\discretionary{\hbox{\char`\,}}{\Wrappedafterbreak}{\hbox{\char`\,}}}% 
+            \lccode`\~`\;\lowercase{\def~}{\discretionary{\hbox{\char`\;}}{\Wrappedafterbreak}{\hbox{\char`\;}}}% 
+            \lccode`\~`\:\lowercase{\def~}{\discretionary{\hbox{\char`\:}}{\Wrappedafterbreak}{\hbox{\char`\:}}}% 
+            \lccode`\~`\?\lowercase{\def~}{\discretionary{\hbox{\char`\?}}{\Wrappedafterbreak}{\hbox{\char`\?}}}% 
+            \lccode`\~`\!\lowercase{\def~}{\discretionary{\hbox{\char`\!}}{\Wrappedafterbreak}{\hbox{\char`\!}}}% 
+            \lccode`\~`\/\lowercase{\def~}{\discretionary{\hbox{\char`\/}}{\Wrappedafterbreak}{\hbox{\char`\/}}}% 
+            \catcode`\.\active
+            \catcode`\,\active 
+            \catcode`\;\active
+            \catcode`\:\active
+            \catcode`\?\active
+            \catcode`\!\active
+            \catcode`\/\active 
+            \lccode`\~`\~ 	
+        }
+    \makeatother
+
+    \let\OriginalVerbatim=\Verbatim
+    \makeatletter
+    \renewcommand{\Verbatim}[1][1]{%
+        %\parskip\z@skip
+        \sbox\Wrappedcontinuationbox {\Wrappedcontinuationsymbol}%
+        \sbox\Wrappedvisiblespacebox {\FV@SetupFont\Wrappedvisiblespace}%
+        \def\FancyVerbFormatLine ##1{\hsize\linewidth
+            \vtop{\raggedright\hyphenpenalty\z@\exhyphenpenalty\z@
+                \doublehyphendemerits\z@\finalhyphendemerits\z@
+                \strut ##1\strut}%
+        }%
+        % If the linebreak is at a space, the latter will be displayed as visible
+        % space at end of first line, and a continuation symbol starts next line.
+        % Stretch/shrink are however usually zero for typewriter font.
+        \def\FV@Space {%
+            \nobreak\hskip\z@ plus\fontdimen3\font minus\fontdimen4\font
+            \discretionary{\copy\Wrappedvisiblespacebox}{\Wrappedafterbreak}
+            {\kern\fontdimen2\font}%
+        }%
+        
+        % Allow breaks at special characters using \PYG... macros.
+        \Wrappedbreaksatspecials
+        % Breaks at punctuation characters . , ; ? ! and / need catcode=\active 	
+        \OriginalVerbatim[#1,codes*=\Wrappedbreaksatpunct]%
+    }
+    \makeatother
+
+    % Exact colors from NB
+    \definecolor{incolor}{HTML}{303F9F}
+    \definecolor{outcolor}{HTML}{D84315}
+    \definecolor{cellborder}{HTML}{CFCFCF}
+    \definecolor{cellbackground}{HTML}{F7F7F7}
+    
+    % prompt
+    \makeatletter
+    \newcommand{\boxspacing}{\kern\kvtcb@left@rule\kern\kvtcb@boxsep}
+    \makeatother
+    \newcommand{\prompt}[4]{
+        {\ttfamily\llap{{\color{#2}[#3]:\hspace{3pt}#4}}\vspace{-\baselineskip}}
+    }
+    
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy 
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+\begin{document}
+    
+    \maketitle
+    
+    
+
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{2}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{os}
+\PY{k+kn}{import} \PY{n+nn}{tensorflow} \PY{k}{as} \PY{n+nn}{tf}
+
+\PY{c+c1}{\PYZsh{} If there are multiple GPUs and we only want to use one/some, set the number in the visible device list.}
+\PY{n}{os}\PY{o}{.}\PY{n}{environ}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{CUDA\PYZus{}DEVICE\PYZus{}ORDER}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{PCI\PYZus{}BUS\PYZus{}ID}\PY{l+s+s2}{\PYZdq{}}
+\PY{n}{os}\PY{o}{.}\PY{n}{environ}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{CUDA\PYZus{}VISIBLE\PYZus{}DEVICES}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{0}\PY{l+s+s2}{\PYZdq{}}
+
+\PY{c+c1}{\PYZsh{} This sets the GPU to allocate memory only as needed}
+\PY{n}{physical\PYZus{}devices} \PY{o}{=} \PY{n}{tf}\PY{o}{.}\PY{n}{config}\PY{o}{.}\PY{n}{experimental}\PY{o}{.}\PY{n}{list\PYZus{}physical\PYZus{}devices}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{GPU}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{k}{if} \PY{n+nb}{len}\PY{p}{(}\PY{n}{physical\PYZus{}devices}\PY{p}{)} \PY{o}{!=} \PY{l+m+mi}{0}\PY{p}{:}
+    \PY{n}{tf}\PY{o}{.}\PY{n}{config}\PY{o}{.}\PY{n}{experimental}\PY{o}{.}\PY{n}{set\PYZus{}memory\PYZus{}growth}\PY{p}{(}\PY{n}{physical\PYZus{}devices}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{k+kc}{True}\PY{p}{)} 
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{loading-the-dataset}{%
+\subsubsection{\texorpdfstring{\textbf{1. Loading the
+dataset}}{1. Loading the dataset}}\label{loading-the-dataset}}
+
+This assignment will focus on the CIFAR10 dataset. This is a collection
+of small images in 10 classes such as cars, cats, birds, etc. You can
+find more information here:
+https://www.cs.toronto.edu/\textasciitilde kriz/cifar.html. We start by
+loading and examining the data.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{3}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np}
+\PY{k+kn}{from} \PY{n+nn}{tensorflow}\PY{n+nn}{.}\PY{n+nn}{keras}\PY{n+nn}{.}\PY{n+nn}{datasets} \PY{k+kn}{import} \PY{n}{cifar10}
+
+\PY{p}{(}\PY{n}{X\PYZus{}train}\PY{p}{,} \PY{n}{y\PYZus{}train}\PY{p}{)}\PY{p}{,} \PY{p}{(}\PY{n}{X\PYZus{}test}\PY{p}{,} \PY{n}{y\PYZus{}test}\PY{p}{)} \PY{o}{=} \PY{n}{cifar10}\PY{o}{.}\PY{n}{load\PYZus{}data}\PY{p}{(}\PY{p}{)}
+
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Shape of training data:}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{X\PYZus{}train}\PY{o}{.}\PY{n}{shape}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{y\PYZus{}train}\PY{o}{.}\PY{n}{shape}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Shape of test data:}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{X\PYZus{}test}\PY{o}{.}\PY{n}{shape}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{y\PYZus{}test}\PY{o}{.}\PY{n}{shape}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Shape of training data:
+(50000, 32, 32, 3)
+(50000, 1)
+Shape of test data:
+(10000, 32, 32, 3)
+(10000, 1)
+    \end{Verbatim}
+
+    \hypertarget{question-1}{%
+\paragraph{\texorpdfstring{\textbf{{Question
+1:}}}{Question 1:}}\label{question-1}}
+
+The shape of X\_train and X\_test has 4 values. What do each of these
+represent?
+
+    \hypertarget{plotting-some-images}{%
+\subparagraph{\texorpdfstring{\textbf{Plotting some
+images}}{Plotting some images}}\label{plotting-some-images}}
+
+This plots a random selection of images from each class. Rerun the cell
+to see a different selection.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{4}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{from} \PY{n+nn}{Custom} \PY{k+kn}{import} \PY{n}{PlotRandomFromEachClass}
+
+\PY{n}{cifar\PYZus{}labels} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{airplane}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{automobile}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{bird}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{cat}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{deer}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{dog}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{frog}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{horse}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ship}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{truck}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+\PY{n}{PlotRandomFromEachClass}\PY{p}{(}\PY{n}{X\PYZus{}train}\PY{p}{,} \PY{n}{y\PYZus{}train}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{,} \PY{n}{labels}\PY{o}{=}\PY{n}{cifar\PYZus{}labels}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_5_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{preparing-the-dataset}{%
+\subparagraph{\texorpdfstring{\textbf{Preparing the
+dataset}}{Preparing the dataset}}\label{preparing-the-dataset}}
+
+Just like the MNIST dataset we normalize the images to {[}0,1{]} and
+transform the class indices to one-hot encoded vectors.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{5}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{from} \PY{n+nn}{tensorflow}\PY{n+nn}{.}\PY{n+nn}{keras}\PY{n+nn}{.}\PY{n+nn}{utils} \PY{k+kn}{import} \PY{n}{to\PYZus{}categorical}
+
+\PY{c+c1}{\PYZsh{} Transform label indices to one\PYZhy{}hot encoded vectors}
+\PY{n}{y\PYZus{}train\PYZus{}c} \PY{o}{=} \PY{n}{to\PYZus{}categorical}\PY{p}{(}\PY{n}{y\PYZus{}train}\PY{p}{,} \PY{n}{num\PYZus{}classes}\PY{o}{=}\PY{l+m+mi}{10}\PY{p}{)}
+\PY{n}{y\PYZus{}test\PYZus{}c}  \PY{o}{=} \PY{n}{to\PYZus{}categorical}\PY{p}{(}\PY{n}{y\PYZus{}test} \PY{p}{,} \PY{n}{num\PYZus{}classes}\PY{o}{=}\PY{l+m+mi}{10}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Normalization of pixel values (to [0\PYZhy{}1] range)}
+\PY{n}{X\PYZus{}train} \PY{o}{=} \PY{n}{X\PYZus{}train}\PY{o}{.}\PY{n}{astype}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{float32}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)} \PY{o}{/} \PY{l+m+mi}{255}
+\PY{n}{X\PYZus{}test}  \PY{o}{=} \PY{n}{X\PYZus{}test}\PY{o}{.}\PY{n}{astype}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{float32}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}  \PY{o}{/} \PY{l+m+mi}{255}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{fully-connected-classifier}{%
+\subsubsection{\texorpdfstring{\textbf{2. Fully connected
+classifier}}{2. Fully connected classifier}}\label{fully-connected-classifier}}
+
+We will start by creating a fully connected classifier using the
+\texttt{Dense} layer. We give you the first layer that flattens the
+image features to a single vector. Add the remaining layers to the
+network.
+
+Consider what the size of the output must be and what activation
+function you should use in the output layer.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{109}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{from} \PY{n+nn}{tensorflow}\PY{n+nn}{.}\PY{n+nn}{keras}\PY{n+nn}{.}\PY{n+nn}{optimizers} \PY{k+kn}{import} \PY{n}{SGD}
+\PY{k+kn}{from} \PY{n+nn}{tensorflow}\PY{n+nn}{.}\PY{n+nn}{keras}\PY{n+nn}{.}\PY{n+nn}{models} \PY{k+kn}{import} \PY{n}{Model}
+\PY{k+kn}{from} \PY{n+nn}{tensorflow}\PY{n+nn}{.}\PY{n+nn}{keras}\PY{n+nn}{.}\PY{n+nn}{layers} \PY{k+kn}{import} \PY{n}{Input}\PY{p}{,} \PY{n}{Dense}\PY{p}{,} \PY{n}{Flatten}
+
+\PY{n}{x\PYZus{}in} \PY{o}{=} \PY{n}{Input}\PY{p}{(}\PY{n}{shape}\PY{o}{=}\PY{n}{X\PYZus{}train}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{:}\PY{p}{]}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{Flatten}\PY{p}{(}\PY{p}{)}\PY{p}{(}\PY{n}{x\PYZus{}in}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} === Add your code here ===}
+\PY{n}{x} \PY{o}{=} \PY{n}{Dense}\PY{p}{(}\PY{l+m+mi}{200}\PY{p}{,} \PY{n}{activation}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{relu}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{Dense}\PY{p}{(}\PY{l+m+mi}{64}\PY{p}{,} \PY{n}{activation}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{relu}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{Dense}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{,} \PY{n}{activation}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{softmax}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{c+c1}{\PYZsh{} ==========================}
+
+\PY{n}{model} \PY{o}{=} \PY{n}{Model}\PY{p}{(}\PY{n}{inputs}\PY{o}{=}\PY{n}{x\PYZus{}in}\PY{p}{,} \PY{n}{outputs}\PY{o}{=}\PY{n}{x}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Now we build the model using Stochastic Gradient Descent with Nesterov momentum. We use accuracy as the metric.}
+\PY{n}{sgd} \PY{o}{=} \PY{n}{SGD}\PY{p}{(}\PY{n}{lr}\PY{o}{=}\PY{l+m+mf}{0.01}\PY{p}{,} \PY{n}{decay}\PY{o}{=}\PY{l+m+mf}{1e\PYZhy{}6}\PY{p}{,} \PY{n}{momentum}\PY{o}{=}\PY{l+m+mf}{0.9}\PY{p}{,} \PY{n}{nesterov}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\PY{n}{model}\PY{o}{.}\PY{n}{compile}\PY{p}{(}\PY{n}{optimizer}\PY{o}{=}\PY{n}{sgd}\PY{p}{,} \PY{n}{loss}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{categorical\PYZus{}crossentropy}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{metrics}\PY{o}{=}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{accuracy}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
+\PY{n}{model}\PY{o}{.}\PY{n}{summary}\PY{p}{(}\PY{l+m+mi}{100}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Model: "model\_39"
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+Layer (type)                                 Output Shape
+Param \#
+================================================================================
+====================
+input\_44 (InputLayer)                        [(None, 32, 32, 3)]
+0
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+flatten\_38 (Flatten)                         (None, 3072)
+0
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+dense\_104 (Dense)                            (None, 200)
+614600
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+dense\_105 (Dense)                            (None, 64)
+12864
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+dense\_106 (Dense)                            (None, 10)
+650
+================================================================================
+====================
+Total params: 628,114
+Trainable params: 628,114
+Non-trainable params: 0
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+    \end{Verbatim}
+
+    \hypertarget{training-the-model}{%
+\subparagraph{\texorpdfstring{\textbf{Training the
+model}}{Training the model}}\label{training-the-model}}
+
+In order to show the differences between models in the first parts of
+the assignment, we will restrict the training to the following command
+using 15 epochs, batch size 32, and 20\% validation data. From section 5
+and forward you can change this as you please to increase the accuracy,
+but for now stick with this command.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{110}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{history} \PY{o}{=} \PY{n}{model}\PY{o}{.}\PY{n}{fit}\PY{p}{(}\PY{n}{X\PYZus{}train}\PY{p}{,}\PY{n}{y\PYZus{}train\PYZus{}c}\PY{p}{,} \PY{n}{epochs}\PY{o}{=}\PY{l+m+mi}{15}\PY{p}{,} \PY{n}{batch\PYZus{}size}\PY{o}{=}\PY{l+m+mi}{32}\PY{p}{,} \PY{n}{verbose}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{validation\PYZus{}split}\PY{o}{=}\PY{l+m+mf}{0.2}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch 1/15
+1250/1250 [==============================] - 4s 3ms/step - loss: 1.8525 -
+accuracy: 0.3279 - val\_loss: 1.7788 - val\_accuracy: 0.3622
+Epoch 2/15
+1250/1250 [==============================] - 4s 3ms/step - loss: 1.6911 -
+accuracy: 0.3930 - val\_loss: 1.7118 - val\_accuracy: 0.3901
+Epoch 3/15
+1250/1250 [==============================] - 4s 3ms/step - loss: 1.6205 -
+accuracy: 0.4205 - val\_loss: 1.6341 - val\_accuracy: 0.4248
+Epoch 4/15
+1250/1250 [==============================] - 4s 3ms/step - loss: 1.5723 -
+accuracy: 0.4378 - val\_loss: 1.6084 - val\_accuracy: 0.4306
+Epoch 5/15
+1250/1250 [==============================] - 4s 3ms/step - loss: 1.5377 -
+accuracy: 0.4507 - val\_loss: 1.5843 - val\_accuracy: 0.4376
+Epoch 6/15
+1250/1250 [==============================] - 4s 3ms/step - loss: 1.5108 -
+accuracy: 0.4567 - val\_loss: 1.5432 - val\_accuracy: 0.4438
+Epoch 7/15
+1250/1250 [==============================] - 4s 3ms/step - loss: 1.4907 -
+accuracy: 0.4659 - val\_loss: 1.5550 - val\_accuracy: 0.4454
+Epoch 8/15
+1250/1250 [==============================] - 4s 3ms/step - loss: 1.4700 -
+accuracy: 0.4697 - val\_loss: 1.5320 - val\_accuracy: 0.4576
+Epoch 9/15
+1250/1250 [==============================] - 4s 3ms/step - loss: 1.4504 -
+accuracy: 0.4795 - val\_loss: 1.5411 - val\_accuracy: 0.4542
+Epoch 10/15
+1250/1250 [==============================] - 4s 3ms/step - loss: 1.4361 -
+accuracy: 0.4849 - val\_loss: 1.5201 - val\_accuracy: 0.4611
+Epoch 11/15
+1250/1250 [==============================] - 4s 3ms/step - loss: 1.4163 -
+accuracy: 0.4915 - val\_loss: 1.5290 - val\_accuracy: 0.4610
+Epoch 12/15
+1250/1250 [==============================] - 4s 3ms/step - loss: 1.3959 -
+accuracy: 0.4956 - val\_loss: 1.5230 - val\_accuracy: 0.4667
+Epoch 13/15
+1250/1250 [==============================] - 4s 3ms/step - loss: 1.3911 -
+accuracy: 0.5008 - val\_loss: 1.5361 - val\_accuracy: 0.4565
+Epoch 14/15
+1250/1250 [==============================] - 4s 3ms/step - loss: 1.3710 -
+accuracy: 0.5059 - val\_loss: 1.5512 - val\_accuracy: 0.4619
+Epoch 15/15
+1250/1250 [==============================] - 4s 3ms/step - loss: 1.3610 -
+accuracy: 0.5132 - val\_loss: 1.4963 - val\_accuracy: 0.4707
+    \end{Verbatim}
+
+    \hypertarget{evaluating-the-model}{%
+\subparagraph{\texorpdfstring{\textbf{Evaluating the
+model}}{Evaluating the model}}\label{evaluating-the-model}}
+
+We use \texttt{model.evaluate} to get the loss and metric scores on the
+test data. To plot the results we give you a custom function that does
+the work for you.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{111}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{score} \PY{o}{=} \PY{n}{model}\PY{o}{.}\PY{n}{evaluate}\PY{p}{(}\PY{n}{X\PYZus{}test}\PY{p}{,} \PY{n}{y\PYZus{}test\PYZus{}c}\PY{p}{,} \PY{n}{batch\PYZus{}size}\PY{o}{=}\PY{l+m+mi}{128}\PY{p}{,} \PY{n}{verbose}\PY{o}{=}\PY{l+m+mi}{0}\PY{p}{)}
+
+\PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{score}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Test }\PY{l+s+s2}{\PYZdq{}} \PY{o}{+} \PY{n}{model}\PY{o}{.}\PY{n}{metrics\PYZus{}names}\PY{p}{[}\PY{n}{i}\PY{p}{]} \PY{o}{+} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ = }\PY{l+s+si}{\PYZpc{}.3f}\PY{l+s+s2}{\PYZdq{}} \PY{o}{\PYZpc{}} \PY{n}{score}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Test loss = 1.490
+Test accuracy = 0.472
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{112}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{from} \PY{n+nn}{Custom} \PY{k+kn}{import} \PY{n}{PlotModelEval}
+
+\PY{c+c1}{\PYZsh{} Custom function for evaluating the model and plotting training history}
+\PY{n}{PlotModelEval}\PY{p}{(}\PY{n}{model}\PY{p}{,} \PY{n}{history}\PY{p}{,} \PY{n}{X\PYZus{}test}\PY{p}{,} \PY{n}{y\PYZus{}test}\PY{p}{,} \PY{n}{cifar\PYZus{}labels}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_14_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{question-2}{%
+\paragraph{\texorpdfstring{\textbf{{Question
+2:}}}{Question 2:}}\label{question-2}}
+
+Train a model that achieves above 45\% accuracy on the test data. In the
+report, provide a (short) description of your model and show the
+evaluation image.
+
+    \hypertarget{question-3}{%
+\paragraph{\texorpdfstring{\textbf{{Question
+3:}}}{Question 3:}}\label{question-3}}
+
+Compare this model to the one you used for the MNIST dataset in the
+first assignment, in terms of size and test accuracy. Why do you think
+this dataset is much harder to classify than the MNIST handwritten
+digits?
+
+    \hypertarget{cnn-classifier}{%
+\subsubsection{\texorpdfstring{\textbf{3. CNN
+classifier}}{3. CNN classifier}}\label{cnn-classifier}}
+
+We will now move on to a network architecture that is more suited for
+this problem, the convolutional neural network. The new layers you will
+use are \texttt{Conv2D} and \texttt{MaxPooling2D}, which you can find
+the documentation of here
+https://www.tensorflow.org/api\_docs/python/tf/keras/layers/Conv2D and
+here
+https://www.tensorflow.org/api\_docs/python/tf/keras/layers/MaxPool2D.
+
+    \hypertarget{creating-the-cnn-model}{%
+\subparagraph{\texorpdfstring{\textbf{Creating the CNN
+model}}{Creating the CNN model}}\label{creating-the-cnn-model}}
+
+A common way to build convolutional neural networks is to create blocks
+of layers of the form \textbf{{[}convolution - activation - pooling{]}},
+and then stack several of these block to create the full convolution
+stack. This is often followed by a fully connected network to create the
+output classes. Use this recipe to build a CNN that acheives at least
+62\% accuracy on the test data.
+
+\emph{Side note. Although this is a common way to build CNNs, it is be
+no means the only or even best way. It is a good starting point, but
+later in part 5 you might want to explore other architectures to acheive
+even better performance.}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{100}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{from} \PY{n+nn}{tensorflow}\PY{n+nn}{.}\PY{n+nn}{keras}\PY{n+nn}{.}\PY{n+nn}{layers} \PY{k+kn}{import} \PY{n}{Conv2D}\PY{p}{,} \PY{n}{MaxPooling2D}
+
+\PY{n}{x\PYZus{}in} \PY{o}{=} \PY{n}{Input}\PY{p}{(}\PY{n}{shape}\PY{o}{=}\PY{n}{X\PYZus{}train}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{:}\PY{p}{]}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} === Add your code here ===}
+
+\PY{n}{x} \PY{o}{=} \PY{n}{Conv2D}\PY{p}{(}\PY{l+m+mi}{32}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{,} \PY{n}{activation}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{relu}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{(}\PY{n}{x\PYZus{}in}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{MaxPooling2D}\PY{p}{(}\PY{n}{pool\PYZus{}size}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{)}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+
+\PY{n}{x} \PY{o}{=} \PY{n}{Conv2D}\PY{p}{(}\PY{l+m+mi}{64}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{,} \PY{n}{activation}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{relu}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{MaxPooling2D}\PY{p}{(}\PY{n}{pool\PYZus{}size}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{)}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+
+
+\PY{n}{x} \PY{o}{=} \PY{n}{Flatten}\PY{p}{(}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{Dense}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{,} \PY{n}{activation}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{softmax}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{c+c1}{\PYZsh{} ==========================}
+
+\PY{n}{model} \PY{o}{=} \PY{n}{Model}\PY{p}{(}\PY{n}{inputs}\PY{o}{=}\PY{n}{x\PYZus{}in}\PY{p}{,} \PY{n}{outputs}\PY{o}{=}\PY{n}{x}\PY{p}{)}
+
+\PY{n}{sgd} \PY{o}{=} \PY{n}{SGD}\PY{p}{(}\PY{n}{lr}\PY{o}{=}\PY{l+m+mf}{0.01}\PY{p}{,} \PY{n}{decay}\PY{o}{=}\PY{l+m+mf}{1e\PYZhy{}6}\PY{p}{,} \PY{n}{momentum}\PY{o}{=}\PY{l+m+mf}{0.9}\PY{p}{,} \PY{n}{nesterov}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\PY{n}{model}\PY{o}{.}\PY{n}{compile}\PY{p}{(}\PY{n}{loss}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{categorical\PYZus{}crossentropy}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{metrics}\PY{o}{=}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{accuracy}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,} \PY{n}{optimizer}\PY{o}{=}\PY{n}{sgd}\PY{p}{)}
+\PY{n}{model}\PY{o}{.}\PY{n}{summary}\PY{p}{(}\PY{l+m+mi}{100}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Model: "model\_36"
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+Layer (type)                                 Output Shape
+Param \#
+================================================================================
+====================
+input\_41 (InputLayer)                        [(None, 32, 32, 3)]
+0
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+conv2d\_48 (Conv2D)                           (None, 30, 30, 32)
+896
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+max\_pooling2d\_44 (MaxPooling2D)              (None, 15, 15, 32)
+0
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+conv2d\_49 (Conv2D)                           (None, 13, 13, 64)
+18496
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+max\_pooling2d\_45 (MaxPooling2D)              (None, 6, 6, 64)
+0
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+flatten\_35 (Flatten)                         (None, 2304)
+0
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+dense\_96 (Dense)                             (None, 10)
+23050
+================================================================================
+====================
+Total params: 42,442
+Trainable params: 42,442
+Non-trainable params: 0
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+    \end{Verbatim}
+
+    \hypertarget{training-the-cnn}{%
+\subparagraph{\texorpdfstring{\textbf{Training the
+CNN}}{Training the CNN}}\label{training-the-cnn}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{101}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{history} \PY{o}{=} \PY{n}{model}\PY{o}{.}\PY{n}{fit}\PY{p}{(}\PY{n}{X\PYZus{}train}\PY{p}{,} \PY{n}{y\PYZus{}train\PYZus{}c}\PY{p}{,} \PY{n}{batch\PYZus{}size}\PY{o}{=}\PY{l+m+mi}{32}\PY{p}{,} \PY{n}{epochs}\PY{o}{=}\PY{l+m+mi}{15}\PY{p}{,} \PY{n}{verbose}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{validation\PYZus{}split}\PY{o}{=}\PY{l+m+mf}{0.2}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch 1/15
+1250/1250 [==============================] - 6s 5ms/step - loss: 1.5995 -
+accuracy: 0.4250 - val\_loss: 1.3995 - val\_accuracy: 0.4941
+Epoch 2/15
+1250/1250 [==============================] - 6s 5ms/step - loss: 1.2270 -
+accuracy: 0.5679 - val\_loss: 1.1484 - val\_accuracy: 0.6045
+Epoch 3/15
+1250/1250 [==============================] - 6s 5ms/step - loss: 1.0919 -
+accuracy: 0.6212 - val\_loss: 1.1071 - val\_accuracy: 0.6172
+Epoch 4/15
+1250/1250 [==============================] - 6s 5ms/step - loss: 1.0135 -
+accuracy: 0.6486 - val\_loss: 1.0681 - val\_accuracy: 0.6358
+Epoch 5/15
+1250/1250 [==============================] - 6s 5ms/step - loss: 0.9573 -
+accuracy: 0.6696 - val\_loss: 1.0362 - val\_accuracy: 0.6509
+Epoch 6/15
+1250/1250 [==============================] - 6s 5ms/step - loss: 0.9033 -
+accuracy: 0.6892 - val\_loss: 1.0677 - val\_accuracy: 0.6317
+Epoch 7/15
+1250/1250 [==============================] - 6s 5ms/step - loss: 0.8623 -
+accuracy: 0.7013 - val\_loss: 1.0173 - val\_accuracy: 0.6550
+Epoch 8/15
+1250/1250 [==============================] - 6s 5ms/step - loss: 0.8207 -
+accuracy: 0.7139 - val\_loss: 0.9954 - val\_accuracy: 0.6750
+Epoch 9/15
+1250/1250 [==============================] - 6s 5ms/step - loss: 0.7922 -
+accuracy: 0.7262 - val\_loss: 1.0129 - val\_accuracy: 0.6661
+Epoch 10/15
+1250/1250 [==============================] - 6s 5ms/step - loss: 0.7637 -
+accuracy: 0.7342 - val\_loss: 1.0656 - val\_accuracy: 0.6584
+Epoch 11/15
+1250/1250 [==============================] - 6s 5ms/step - loss: 0.7335 -
+accuracy: 0.7430 - val\_loss: 1.0502 - val\_accuracy: 0.6628
+Epoch 12/15
+1250/1250 [==============================] - 6s 5ms/step - loss: 0.7123 -
+accuracy: 0.7525 - val\_loss: 1.0424 - val\_accuracy: 0.6593
+Epoch 13/15
+1250/1250 [==============================] - 6s 5ms/step - loss: 0.6917 -
+accuracy: 0.7603 - val\_loss: 1.0389 - val\_accuracy: 0.6717
+Epoch 14/15
+1250/1250 [==============================] - 6s 5ms/step - loss: 0.6726 -
+accuracy: 0.7650 - val\_loss: 1.0742 - val\_accuracy: 0.6602
+Epoch 15/15
+1250/1250 [==============================] - 6s 5ms/step - loss: 0.6497 -
+accuracy: 0.7739 - val\_loss: 1.1161 - val\_accuracy: 0.6556
+    \end{Verbatim}
+
+    \hypertarget{evaluating-the-cnn}{%
+\subparagraph{\texorpdfstring{\textbf{Evaluating the
+CNN}}{Evaluating the CNN}}\label{evaluating-the-cnn}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{102}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{score} \PY{o}{=} \PY{n}{model}\PY{o}{.}\PY{n}{evaluate}\PY{p}{(}\PY{n}{X\PYZus{}test}\PY{p}{,} \PY{n}{y\PYZus{}test\PYZus{}c}\PY{p}{,} \PY{n}{batch\PYZus{}size}\PY{o}{=}\PY{l+m+mi}{128}\PY{p}{,} \PY{n}{verbose}\PY{o}{=}\PY{l+m+mi}{0}\PY{p}{)}
+
+\PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{score}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Test }\PY{l+s+s2}{\PYZdq{}} \PY{o}{+} \PY{n}{model}\PY{o}{.}\PY{n}{metrics\PYZus{}names}\PY{p}{[}\PY{n}{i}\PY{p}{]} \PY{o}{+} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ = }\PY{l+s+si}{\PYZpc{}.3f}\PY{l+s+s2}{\PYZdq{}} \PY{o}{\PYZpc{}} \PY{n}{score}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Test loss = 1.135
+Test accuracy = 0.655
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{103}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{PlotModelEval}\PY{p}{(}\PY{n}{model}\PY{p}{,} \PY{n}{history}\PY{p}{,} \PY{n}{X\PYZus{}test}\PY{p}{,} \PY{n}{y\PYZus{}test}\PY{p}{,} \PY{n}{cifar\PYZus{}labels}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_24_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{question-4}{%
+\paragraph{\texorpdfstring{\textbf{{Question
+4:}}}{Question 4:}}\label{question-4}}
+
+Train a model that achieves at least 62\% test accuracy. In the report,
+provide a (short) description of your model and show the evaluation
+image.
+
+    \hypertarget{question-5}{%
+\paragraph{\texorpdfstring{\textbf{{Question
+5:}}}{Question 5:}}\label{question-5}}
+
+Compare this model with the previous fully connected model. You should
+find that this one is much more efficient, i.e.~achieves higher accuracy
+with fewer parameters. Explain in your own words how this is possible.
+
+    \hypertarget{regularization}{%
+\subsubsection{\texorpdfstring{\textbf{4.
+Regularization}}{4. Regularization}}\label{regularization}}
+
+    \hypertarget{dropout}{%
+\paragraph{\texorpdfstring{\textbf{4.1
+Dropout}}{4.1 Dropout}}\label{dropout}}
+
+You have probably seen that your CNN model overfits the training data.
+One way to prevent this is to add \texttt{Dropout} layers to the model,
+that randomly ``drops'' hidden nodes each training-iteration by setting
+their output to zero. Thus the model cannot rely on a small set of very
+good hidden features, but must instead learns to use different sets of
+hidden features each time. Dropout layers are usually added after the
+pooling layers in the convolution part of the model, or after
+activations in the fully connected part of the model.
+
+\emph{Side note. In the next assignment you will work with Ensemble
+models, a way to use the output from several individual models to
+achieve higher performance than each model can achieve on its own. One
+way to interpret Dropout is that each random selection of nodes is a
+separate model that is trained only on the current iteration. The final
+output is then the average of outputs from all the individual models. In
+other words, Dropout can be seen as a way to build ensembling directly
+into the network, without having to train several models explicitly.}
+
+Extend your previous model with the Dropout layer and test the new
+performance.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{120}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{from} \PY{n+nn}{tensorflow}\PY{n+nn}{.}\PY{n+nn}{keras}\PY{n+nn}{.}\PY{n+nn}{layers} \PY{k+kn}{import} \PY{n}{Dropout}
+
+\PY{n}{x\PYZus{}in} \PY{o}{=} \PY{n}{Input}\PY{p}{(}\PY{n}{shape}\PY{o}{=}\PY{n}{X\PYZus{}train}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{:}\PY{p}{]}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} === Add your code here ===}
+\PY{n}{x} \PY{o}{=} \PY{n}{Conv2D}\PY{p}{(}\PY{l+m+mi}{32}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{,} \PY{n}{activation}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{relu}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{(}\PY{n}{x\PYZus{}in}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{MaxPooling2D}\PY{p}{(}\PY{n}{pool\PYZus{}size}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{)}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{Dropout}\PY{p}{(}\PY{l+m+mf}{0.2}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{Conv2D}\PY{p}{(}\PY{l+m+mi}{64}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{,} \PY{n}{activation}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{relu}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{MaxPooling2D}\PY{p}{(}\PY{n}{pool\PYZus{}size}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{)}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{Dropout}\PY{p}{(}\PY{l+m+mf}{0.2}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+
+\PY{n}{x} \PY{o}{=} \PY{n}{Flatten}\PY{p}{(}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{Dense}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{,} \PY{n}{activation}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{softmax}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{c+c1}{\PYZsh{} ==========================}
+
+\PY{n}{model} \PY{o}{=} \PY{n}{Model}\PY{p}{(}\PY{n}{inputs}\PY{o}{=}\PY{n}{x\PYZus{}in}\PY{p}{,} \PY{n}{outputs}\PY{o}{=}\PY{n}{x}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Compile model}
+\PY{n}{sgd} \PY{o}{=} \PY{n}{SGD}\PY{p}{(}\PY{n}{lr}\PY{o}{=}\PY{l+m+mf}{0.01}\PY{p}{,} \PY{n}{decay}\PY{o}{=}\PY{l+m+mf}{1e\PYZhy{}6}\PY{p}{,} \PY{n}{momentum}\PY{o}{=}\PY{l+m+mf}{0.9}\PY{p}{,} \PY{n}{nesterov}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\PY{n}{model}\PY{o}{.}\PY{n}{compile}\PY{p}{(}\PY{n}{loss}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{categorical\PYZus{}crossentropy}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{metrics}\PY{o}{=}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{accuracy}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,} \PY{n}{optimizer}\PY{o}{=}\PY{n}{sgd}\PY{p}{)}
+\PY{n}{model}\PY{o}{.}\PY{n}{summary}\PY{p}{(}\PY{l+m+mi}{100}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Model: "model\_43"
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+Layer (type)                                 Output Shape
+Param \#
+================================================================================
+====================
+input\_48 (InputLayer)                        [(None, 32, 32, 3)]
+0
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+conv2d\_56 (Conv2D)                           (None, 30, 30, 32)
+896
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+max\_pooling2d\_52 (MaxPooling2D)              (None, 15, 15, 32)
+0
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+dropout\_5 (Dropout)                          (None, 15, 15, 32)
+0
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+conv2d\_57 (Conv2D)                           (None, 13, 13, 64)
+18496
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+max\_pooling2d\_53 (MaxPooling2D)              (None, 6, 6, 64)
+0
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+dropout\_6 (Dropout)                          (None, 6, 6, 64)
+0
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+flatten\_42 (Flatten)                         (None, 2304)
+0
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+dense\_110 (Dense)                            (None, 10)
+23050
+================================================================================
+====================
+Total params: 42,442
+Trainable params: 42,442
+Non-trainable params: 0
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{121}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{history} \PY{o}{=} \PY{n}{model}\PY{o}{.}\PY{n}{fit}\PY{p}{(}\PY{n}{X\PYZus{}train}\PY{p}{,} \PY{n}{y\PYZus{}train\PYZus{}c}\PY{p}{,} \PY{n}{batch\PYZus{}size}\PY{o}{=}\PY{l+m+mi}{32}\PY{p}{,} \PY{n}{epochs}\PY{o}{=}\PY{l+m+mi}{15}\PY{p}{,} \PY{n}{verbose}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{validation\PYZus{}split}\PY{o}{=}\PY{l+m+mf}{0.2}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch 1/15
+1250/1250 [==============================] - 6s 5ms/step - loss: 1.6340 -
+accuracy: 0.4092 - val\_loss: 1.3482 - val\_accuracy: 0.5318
+Epoch 2/15
+1250/1250 [==============================] - 5s 4ms/step - loss: 1.2734 -
+accuracy: 0.5491 - val\_loss: 1.1623 - val\_accuracy: 0.6006
+Epoch 3/15
+1250/1250 [==============================] - 5s 4ms/step - loss: 1.1584 -
+accuracy: 0.5929 - val\_loss: 1.1096 - val\_accuracy: 0.6215
+Epoch 4/15
+1250/1250 [==============================] - 5s 4ms/step - loss: 1.0891 -
+accuracy: 0.6201 - val\_loss: 1.1179 - val\_accuracy: 0.6193
+Epoch 5/15
+1250/1250 [==============================] - 5s 4ms/step - loss: 1.0449 -
+accuracy: 0.6344 - val\_loss: 0.9986 - val\_accuracy: 0.6544
+Epoch 6/15
+1250/1250 [==============================] - 5s 4ms/step - loss: 1.0076 -
+accuracy: 0.6502 - val\_loss: 0.9653 - val\_accuracy: 0.6707
+Epoch 7/15
+1250/1250 [==============================] - 5s 4ms/step - loss: 0.9767 -
+accuracy: 0.6577 - val\_loss: 0.9912 - val\_accuracy: 0.6613
+Epoch 8/15
+1250/1250 [==============================] - 5s 4ms/step - loss: 0.9496 -
+accuracy: 0.6691 - val\_loss: 0.9608 - val\_accuracy: 0.6741
+Epoch 9/15
+1250/1250 [==============================] - 5s 4ms/step - loss: 0.9341 -
+accuracy: 0.6756 - val\_loss: 0.9279 - val\_accuracy: 0.6817
+Epoch 10/15
+1250/1250 [==============================] - 5s 4ms/step - loss: 0.9141 -
+accuracy: 0.6809 - val\_loss: 1.0192 - val\_accuracy: 0.6420
+Epoch 11/15
+1250/1250 [==============================] - 5s 4ms/step - loss: 0.9025 -
+accuracy: 0.6849 - val\_loss: 0.9293 - val\_accuracy: 0.6828
+Epoch 12/15
+1250/1250 [==============================] - 5s 4ms/step - loss: 0.8945 -
+accuracy: 0.6913 - val\_loss: 0.9392 - val\_accuracy: 0.6802
+Epoch 13/15
+1250/1250 [==============================] - 5s 4ms/step - loss: 0.8783 -
+accuracy: 0.6948 - val\_loss: 0.9324 - val\_accuracy: 0.6768
+Epoch 14/15
+1250/1250 [==============================] - 5s 4ms/step - loss: 0.8803 -
+accuracy: 0.6956 - val\_loss: 0.9220 - val\_accuracy: 0.6818
+Epoch 15/15
+1250/1250 [==============================] - 5s 4ms/step - loss: 0.8656 -
+accuracy: 0.6990 - val\_loss: 0.9410 - val\_accuracy: 0.6793
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{122}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{score} \PY{o}{=} \PY{n}{model}\PY{o}{.}\PY{n}{evaluate}\PY{p}{(}\PY{n}{X\PYZus{}test}\PY{p}{,} \PY{n}{y\PYZus{}test\PYZus{}c}\PY{p}{,} \PY{n}{batch\PYZus{}size}\PY{o}{=}\PY{l+m+mi}{128}\PY{p}{,} \PY{n}{verbose}\PY{o}{=}\PY{l+m+mi}{0}\PY{p}{)}
+
+\PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{score}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Test }\PY{l+s+s2}{\PYZdq{}} \PY{o}{+} \PY{n}{model}\PY{o}{.}\PY{n}{metrics\PYZus{}names}\PY{p}{[}\PY{n}{i}\PY{p}{]} \PY{o}{+} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ = }\PY{l+s+si}{\PYZpc{}.3f}\PY{l+s+s2}{\PYZdq{}} \PY{o}{\PYZpc{}} \PY{n}{score}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Test loss = 0.956
+Test accuracy = 0.668
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{123}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{PlotModelEval}\PY{p}{(}\PY{n}{model}\PY{p}{,} \PY{n}{history}\PY{p}{,} \PY{n}{X\PYZus{}test}\PY{p}{,} \PY{n}{y\PYZus{}test}\PY{p}{,} \PY{n}{cifar\PYZus{}labels}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_32_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{question-6}{%
+\paragraph{\texorpdfstring{\textbf{{Question
+6:}}}{Question 6:}}\label{question-6}}
+
+Train the modified CNN-model. Save the evaluation image for the report.
+
+    \hypertarget{question-7}{%
+\paragraph{\texorpdfstring{\textbf{{Question
+7:}}}{Question 7:}}\label{question-7}}
+
+Compare this model and the previous in terms of the training accuracy,
+validation accuracy, and test accuracy. Explain the similarities and
+differences (remember that the only difference between the models should
+be the addition of Dropout layers).
+
+Hint: what does the dropout layer do at test time?
+
+    \hypertarget{batch-normalization}{%
+\paragraph{\texorpdfstring{\textbf{4.2 Batch
+normalization}}{4.2 Batch normalization}}\label{batch-normalization}}
+
+The final layer we will explore is \texttt{BatchNormalization}. As the
+name suggests, this layer normalizes the data in each batch to have a
+specific mean and standard deviation, which is learned during training.
+The reason for this is quite complicated (and still debated among the
+experts), but suffice to say that it helps the optimization converge
+faster which means we get higher performance in fewer epochs. The
+normalization is done separatly for each feature, i.e.~the statistics
+are calculated accross the batch dimension of the input data. The
+equations for batch-normalizing one feature are the following, where
+\(N\) is the batch size, \(x\) the input features, and \(y\) the
+normalized output features:
+
+\[ \mu = \frac{1}{N} \sum_{i=0}^{N}x_i,\;\;\;\; \sigma^2 = \frac{1}{N} \sum_{i=0}^{N}(x_i - \mu)^2 \]
+
+\[ \hat{x}_i = \frac{x_i - \mu}{\sqrt{\sigma^2 + \epsilon}} \]
+
+\[ y_i = \gamma \hat{x}_i + \beta \]
+
+At first glance this might look intimidating, but all it means is that
+we begin by scaling and shifting the data to have mean \(\mu=0\) and
+standard deviation \(\sigma=1\). After this we use the learnable
+parameters \(\gamma\) and \(\beta\) to decide the width and center of
+the final distribution. \(\epsilon\) is a small constant value that
+prevents the denominator from being zero.
+
+In addition to learning the parameters \(\gamma\) and \(\beta\) by
+gradient decent just like the weights, Batch Normalization also keeps
+track of the running average of minibatch statistics \(\mu\) and
+\(\sigma\). These averages are used to normalize the test data. We can
+tune the rate at which the running averages are updated with the
+\emph{momentum} parameter of the BatchNormalization layer. A large
+momentum means that the statistics converge more slowly and therefore
+requires more updates before it represents the data. A low momentum, on
+the other hand, adapts to the data more quickly but might lead to
+unstable behaviour if the latest minibatches are not representative of
+the whole dataset. For this test we recommend a momentum of 0.75, but
+you probably want to change this when you design a larger network in
+Section 5.
+
+The batch normalization layer should be added after the hidden layer
+linear transformation, but before the nonlinear activation. This means
+that we cannot specify the activation funciton in the \texttt{Conv2D} or
+\texttt{Dense} if we want to batch-normalize the output. We therefore
+need to use the \texttt{Activation} layer to add a separate activation
+to the network stack after batch normalization. For example, the
+convolution block will now look like \textbf{{[}conv - batchnorm -
+activation - pooling{]}}.
+
+Extend your previous model with batch normalization, both in the
+convolution and fully connected part of the model.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{208}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{from} \PY{n+nn}{tensorflow}\PY{n+nn}{.}\PY{n+nn}{keras}\PY{n+nn}{.}\PY{n+nn}{layers} \PY{k+kn}{import} \PY{n}{BatchNormalization}\PY{p}{,} \PY{n}{Activation}
+
+\PY{n}{x\PYZus{}in} \PY{o}{=} \PY{n}{Input}\PY{p}{(}\PY{n}{shape}\PY{o}{=}\PY{n}{X\PYZus{}train}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{:}\PY{p}{]}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} === Add your code here ===}
+\PY{n}{x} \PY{o}{=} \PY{n}{Conv2D}\PY{p}{(}\PY{l+m+mi}{32}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{)}\PY{p}{(}\PY{n}{x\PYZus{}in}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{BatchNormalization}\PY{p}{(}\PY{n}{momentum} \PY{o}{=}\PY{l+m+mf}{0.75}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{Activation}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{relu}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{MaxPooling2D}\PY{p}{(}\PY{n}{pool\PYZus{}size}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{)}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{Dropout}\PY{p}{(}\PY{l+m+mf}{0.2}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+
+\PY{n}{x} \PY{o}{=} \PY{n}{Conv2D}\PY{p}{(}\PY{l+m+mi}{64}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{,} \PY{n}{padding} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{same}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{BatchNormalization}\PY{p}{(}\PY{n}{momentum} \PY{o}{=}\PY{l+m+mf}{0.75}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{Activation}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{relu}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{MaxPooling2D}\PY{p}{(}\PY{n}{pool\PYZus{}size}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{)}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{Dropout}\PY{p}{(}\PY{l+m+mf}{0.2}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+
+\PY{n}{x} \PY{o}{=} \PY{n}{Flatten}\PY{p}{(}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{Dense}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{,} \PY{n}{activation}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{softmax}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{c+c1}{\PYZsh{} ==========================}
+
+\PY{n}{model} \PY{o}{=} \PY{n}{Model}\PY{p}{(}\PY{n}{inputs}\PY{o}{=}\PY{n}{x\PYZus{}in}\PY{p}{,} \PY{n}{outputs}\PY{o}{=}\PY{n}{x}\PY{p}{)}
+
+\PY{n}{sgd} \PY{o}{=} \PY{n}{SGD}\PY{p}{(}\PY{n}{lr}\PY{o}{=}\PY{l+m+mf}{0.01}\PY{p}{,} \PY{n}{decay}\PY{o}{=}\PY{l+m+mf}{1e\PYZhy{}6}\PY{p}{,} \PY{n}{momentum}\PY{o}{=}\PY{l+m+mf}{0.9}\PY{p}{,} \PY{n}{nesterov}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\PY{n}{model}\PY{o}{.}\PY{n}{compile}\PY{p}{(}\PY{n}{loss}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{categorical\PYZus{}crossentropy}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{metrics}\PY{o}{=}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{accuracy}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,} \PY{n}{optimizer}\PY{o}{=}\PY{n}{sgd}\PY{p}{)}
+\PY{n}{model}\PY{o}{.}\PY{n}{summary}\PY{p}{(}\PY{l+m+mi}{100}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Model: "model\_50"
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+Layer (type)                                 Output Shape
+Param \#
+================================================================================
+====================
+input\_96 (InputLayer)                        [(None, 32, 32, 3)]
+0
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+conv2d\_454 (Conv2D)                          (None, 30, 30, 32)
+896
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+batch\_normalization\_350 (BatchNormalization) (None, 30, 30, 32)
+128
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+activation\_16 (Activation)                   (None, 30, 30, 32)
+0
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+max\_pooling2d\_114 (MaxPooling2D)             (None, 15, 15, 32)
+0
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+dropout\_57 (Dropout)                         (None, 15, 15, 32)
+0
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+conv2d\_455 (Conv2D)                          (None, 15, 15, 64)
+18496
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+batch\_normalization\_351 (BatchNormalization) (None, 15, 15, 64)
+256
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+activation\_17 (Activation)                   (None, 15, 15, 64)
+0
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+max\_pooling2d\_115 (MaxPooling2D)             (None, 7, 7, 64)
+0
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+dropout\_58 (Dropout)                         (None, 7, 7, 64)
+0
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+flatten\_65 (Flatten)                         (None, 3136)
+0
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+dense\_133 (Dense)                            (None, 10)
+31370
+================================================================================
+====================
+Total params: 51,146
+Trainable params: 50,954
+Non-trainable params: 192
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{128}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{history} \PY{o}{=} \PY{n}{model}\PY{o}{.}\PY{n}{fit}\PY{p}{(}\PY{n}{X\PYZus{}train}\PY{p}{,} \PY{n}{y\PYZus{}train\PYZus{}c}\PY{p}{,} \PY{n}{batch\PYZus{}size}\PY{o}{=}\PY{l+m+mi}{32}\PY{p}{,} \PY{n}{epochs}\PY{o}{=}\PY{l+m+mi}{15}\PY{p}{,} \PY{n}{verbose}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{validation\PYZus{}split}\PY{o}{=}\PY{l+m+mf}{0.2}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch 1/15
+1250/1250 [==============================] - 6s 5ms/step - loss: 1.5068 -
+accuracy: 0.4775 - val\_loss: 1.2484 - val\_accuracy: 0.5627
+Epoch 2/15
+1250/1250 [==============================] - 6s 5ms/step - loss: 1.1673 -
+accuracy: 0.5892 - val\_loss: 1.0998 - val\_accuracy: 0.6148
+Epoch 3/15
+1250/1250 [==============================] - 6s 5ms/step - loss: 1.0674 -
+accuracy: 0.6257 - val\_loss: 1.0529 - val\_accuracy: 0.6377
+Epoch 4/15
+1250/1250 [==============================] - 6s 5ms/step - loss: 1.0046 -
+accuracy: 0.6508 - val\_loss: 0.9781 - val\_accuracy: 0.6628
+Epoch 5/15
+1250/1250 [==============================] - 6s 5ms/step - loss: 0.9607 -
+accuracy: 0.6671 - val\_loss: 0.9664 - val\_accuracy: 0.6649
+Epoch 6/15
+1250/1250 [==============================] - 6s 5ms/step - loss: 0.9315 -
+accuracy: 0.6772 - val\_loss: 1.0005 - val\_accuracy: 0.6470
+Epoch 7/15
+1250/1250 [==============================] - 6s 5ms/step - loss: 0.9007 -
+accuracy: 0.6913 - val\_loss: 0.8659 - val\_accuracy: 0.7019
+Epoch 8/15
+1250/1250 [==============================] - 6s 5ms/step - loss: 0.8762 -
+accuracy: 0.6985 - val\_loss: 0.8891 - val\_accuracy: 0.6945
+Epoch 9/15
+1250/1250 [==============================] - 6s 5ms/step - loss: 0.8624 -
+accuracy: 0.7029 - val\_loss: 0.8631 - val\_accuracy: 0.7016
+Epoch 10/15
+1250/1250 [==============================] - 6s 5ms/step - loss: 0.8490 -
+accuracy: 0.7063 - val\_loss: 0.8652 - val\_accuracy: 0.7023
+Epoch 11/15
+1250/1250 [==============================] - 6s 5ms/step - loss: 0.8310 -
+accuracy: 0.7122 - val\_loss: 0.8609 - val\_accuracy: 0.7075
+Epoch 12/15
+1250/1250 [==============================] - 6s 5ms/step - loss: 0.8218 -
+accuracy: 0.7162 - val\_loss: 0.8359 - val\_accuracy: 0.7151
+Epoch 13/15
+1250/1250 [==============================] - 6s 5ms/step - loss: 0.8059 -
+accuracy: 0.7216 - val\_loss: 0.8399 - val\_accuracy: 0.7114
+Epoch 14/15
+1250/1250 [==============================] - 6s 5ms/step - loss: 0.7926 -
+accuracy: 0.7225 - val\_loss: 0.8405 - val\_accuracy: 0.7094
+Epoch 15/15
+1250/1250 [==============================] - 6s 5ms/step - loss: 0.7812 -
+accuracy: 0.7273 - val\_loss: 0.8185 - val\_accuracy: 0.7220
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{129}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{score} \PY{o}{=} \PY{n}{model}\PY{o}{.}\PY{n}{evaluate}\PY{p}{(}\PY{n}{X\PYZus{}test}\PY{p}{,} \PY{n}{y\PYZus{}test\PYZus{}c}\PY{p}{,} \PY{n}{batch\PYZus{}size}\PY{o}{=}\PY{l+m+mi}{128}\PY{p}{,} \PY{n}{verbose}\PY{o}{=}\PY{l+m+mi}{0}\PY{p}{)}
+
+\PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{score}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Test }\PY{l+s+s2}{\PYZdq{}} \PY{o}{+} \PY{n}{model}\PY{o}{.}\PY{n}{metrics\PYZus{}names}\PY{p}{[}\PY{n}{i}\PY{p}{]} \PY{o}{+} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ = }\PY{l+s+si}{\PYZpc{}.3f}\PY{l+s+s2}{\PYZdq{}} \PY{o}{\PYZpc{}} \PY{n}{score}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Test loss = 0.836
+Test accuracy = 0.712
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{130}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{PlotModelEval}\PY{p}{(}\PY{n}{model}\PY{p}{,} \PY{n}{history}\PY{p}{,} \PY{n}{X\PYZus{}test}\PY{p}{,} \PY{n}{y\PYZus{}test}\PY{p}{,} \PY{n}{cifar\PYZus{}labels}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_39_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{question-8}{%
+\paragraph{\texorpdfstring{\textbf{{Question
+8:}}}{Question 8:}}\label{question-8}}
+
+Train the model and save the evaluation image for the report.
+
+    \hypertarget{question-9}{%
+\paragraph{\texorpdfstring{\textbf{{Question
+9:}}}{Question 9:}}\label{question-9}}
+
+When using BatchNorm one must take care to select a good minibatch size.
+Describe what problems might arise if the wrong minibatch size is used.
+
+You can reason about this given the description of BatchNorm above, or
+you can search for the information in other sources. Do not forget to
+provide links to the sources if you do!
+
+    \hypertarget{putting-it-all-together}{%
+\subsubsection{\texorpdfstring{\textbf{5. Putting it all
+together}}{5. Putting it all together}}\label{putting-it-all-together}}
+
+We now want you to create your own model based on what you have learned.
+We want you to experiment and see what works and what doesn't, so don't
+go crazy with the number of epochs until you think you have something
+that works.
+
+To pass this assignment, we want you to acheive \textbf{75\%} accuracy
+on the test data in no more than \textbf{25 epochs}. This is possible
+using the layers and techniques we have explored in this notebook, but
+you are free to use any other methods that we didn't cover. (You are
+obviously not allowed to cheat, for example by training on the test
+data.)
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{202}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{from} \PY{n+nn}{tensorflow}\PY{n+nn}{.}\PY{n+nn}{keras}\PY{n+nn}{.}\PY{n+nn}{utils} \PY{k+kn}{import} \PY{n}{plot\PYZus{}model}
+\PY{k+kn}{from} \PY{n+nn}{tensorflow}\PY{n+nn}{.}\PY{n+nn}{keras}\PY{n+nn}{.}\PY{n+nn}{layers} \PY{k+kn}{import} \PY{n}{ReLU}\PY{p}{,} \PY{n}{GlobalAveragePooling2D}
+
+\PY{n}{x\PYZus{}in} \PY{o}{=} \PY{n}{Input}\PY{p}{(}\PY{n}{shape}\PY{o}{=}\PY{n}{X\PYZus{}train}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{:}\PY{p}{]}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} === Add your code here ===}
+
+\PY{n}{x} \PY{o}{=} \PY{n}{Conv2D}\PY{p}{(}\PY{l+m+mi}{64}\PY{p}{,} \PY{l+m+mi}{7}\PY{p}{,}\PY{n}{padding} \PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{same}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{(}\PY{n}{x\PYZus{}in}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{BatchNormalization}\PY{p}{(}\PY{n}{momentum} \PY{o}{=}\PY{l+m+mf}{0.75}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{MaxPooling2D}\PY{p}{(}\PY{n}{pool\PYZus{}size}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{)}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+
+\PY{n}{y} \PY{o}{=} \PY{n}{x}
+
+\PY{n}{x} \PY{o}{=} \PY{n}{Conv2D}\PY{p}{(}\PY{l+m+mi}{64}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{,}\PY{n}{padding} \PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{same}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{BatchNormalization}\PY{p}{(}\PY{n}{momentum} \PY{o}{=}\PY{l+m+mf}{0.75}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{ReLU}\PY{p}{(}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{Conv2D}\PY{p}{(}\PY{l+m+mi}{64}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{,}\PY{n}{padding} \PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{same}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{BatchNormalization}\PY{p}{(}\PY{n}{momentum} \PY{o}{=}\PY{l+m+mf}{0.75}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+
+\PY{n}{x}\PY{o}{=}\PY{n}{x}\PY{o}{+}\PY{n}{y}
+\PY{n}{x} \PY{o}{=} \PY{n}{ReLU}\PY{p}{(}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{y} \PY{o}{=} \PY{n}{x}
+
+\PY{n}{x} \PY{o}{=} \PY{n}{Conv2D}\PY{p}{(}\PY{l+m+mi}{64}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{,}\PY{n}{padding} \PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{same}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{BatchNormalization}\PY{p}{(}\PY{n}{momentum} \PY{o}{=}\PY{l+m+mf}{0.75}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{ReLU}\PY{p}{(}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{Conv2D}\PY{p}{(}\PY{l+m+mi}{64}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{,}\PY{n}{padding} \PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{same}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{BatchNormalization}\PY{p}{(}\PY{n}{momentum} \PY{o}{=}\PY{l+m+mf}{0.75}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+
+\PY{n}{x}\PY{o}{=}\PY{n}{x}\PY{o}{+}\PY{n}{y}
+\PY{n}{x} \PY{o}{=} \PY{n}{ReLU}\PY{p}{(}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{y} \PY{o}{=} \PY{n}{x}
+\PY{n}{y} \PY{o}{=} \PY{n}{Conv2D}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{,}\PY{n}{padding} \PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{same}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{(}\PY{n}{y}\PY{p}{)}
+
+\PY{n}{x} \PY{o}{=} \PY{n}{Conv2D}\PY{p}{(}\PY{l+m+mi}{64}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{,}\PY{n}{padding} \PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{same}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{BatchNormalization}\PY{p}{(}\PY{n}{momentum} \PY{o}{=}\PY{l+m+mf}{0.75}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{ReLU}\PY{p}{(}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{Conv2D}\PY{p}{(}\PY{l+m+mi}{64}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{,}\PY{n}{padding} \PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{same}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{BatchNormalization}\PY{p}{(}\PY{n}{momentum} \PY{o}{=}\PY{l+m+mf}{0.75}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+
+\PY{n}{x}\PY{o}{=}\PY{n}{x}\PY{o}{+}\PY{n}{y}
+\PY{n}{x} \PY{o}{=} \PY{n}{ReLU}\PY{p}{(}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{y} \PY{o}{=} \PY{n}{x}
+
+\PY{n}{x} \PY{o}{=} \PY{n}{Conv2D}\PY{p}{(}\PY{l+m+mi}{64}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{,}\PY{n}{padding} \PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{same}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{BatchNormalization}\PY{p}{(}\PY{n}{momentum} \PY{o}{=}\PY{l+m+mf}{0.75}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{ReLU}\PY{p}{(}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{Conv2D}\PY{p}{(}\PY{l+m+mi}{64}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{,}\PY{n}{padding} \PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{same}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{BatchNormalization}\PY{p}{(}\PY{n}{momentum} \PY{o}{=}\PY{l+m+mf}{0.75}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{x}\PY{o}{=}\PY{n}{x}\PY{o}{+}\PY{n}{y}
+
+\PY{n}{x} \PY{o}{=} \PY{n}{ReLU}\PY{p}{(}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{GlobalAveragePooling2D}\PY{p}{(}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+
+\PY{n}{x} \PY{o}{=} \PY{n}{Flatten}\PY{p}{(}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{Dense}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{,} \PY{n}{activation}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{softmax}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} ==========================}
+
+\PY{n}{model} \PY{o}{=} \PY{n}{Model}\PY{p}{(}\PY{n}{inputs}\PY{o}{=}\PY{n}{x\PYZus{}in}\PY{p}{,} \PY{n}{outputs}\PY{o}{=}\PY{n}{x}\PY{p}{)}
+
+\PY{n}{sgd} \PY{o}{=} \PY{n}{SGD}\PY{p}{(}\PY{n}{lr}\PY{o}{=}\PY{l+m+mf}{0.01}\PY{p}{,} \PY{n}{decay}\PY{o}{=}\PY{l+m+mf}{1e\PYZhy{}6}\PY{p}{,} \PY{n}{momentum}\PY{o}{=}\PY{l+m+mf}{0.9}\PY{p}{,} \PY{n}{nesterov}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\PY{n}{model}\PY{o}{.}\PY{n}{compile}\PY{p}{(}\PY{n}{loss}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{categorical\PYZus{}crossentropy}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{metrics}\PY{o}{=}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{accuracy}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,} \PY{n}{optimizer}\PY{o}{=}\PY{n}{sgd}\PY{p}{)}
+\PY{n}{model}\PY{o}{.}\PY{n}{summary}\PY{p}{(}\PY{l+m+mi}{100}\PY{p}{)}
+\PY{n}{plot\PYZus{}model}\PY{p}{(}\PY{n}{model}\PY{p}{,} \PY{n}{show\PYZus{}shapes}\PY{o}{=}\PY{k+kc}{True}\PY{p}{,} \PY{n}{show\PYZus{}layer\PYZus{}names}\PY{o}{=}\PY{k+kc}{False}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Model: "model\_49"
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+Layer (type)                     Output Shape          Param \#     Connected to
+================================================================================
+====================
+input\_93 (InputLayer)            [(None, 32, 32, 3)]   0
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+conv2d\_440 (Conv2D)              (None, 32, 32, 64)    9472
+input\_93[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+batch\_normalization\_337 (BatchNo (None, 32, 32, 64)    256
+conv2d\_440[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+max\_pooling2d\_109 (MaxPooling2D) (None, 10, 10, 64)    0
+batch\_normalization\_337[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+conv2d\_441 (Conv2D)              (None, 10, 10, 64)    36928
+max\_pooling2d\_109[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+batch\_normalization\_338 (BatchNo (None, 10, 10, 64)    256
+conv2d\_441[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+re\_lu\_269 (ReLU)                 (None, 10, 10, 64)    0
+batch\_normalization\_338[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+conv2d\_442 (Conv2D)              (None, 10, 10, 64)    36928
+re\_lu\_269[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+batch\_normalization\_339 (BatchNo (None, 10, 10, 64)    256
+conv2d\_442[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+tf\_op\_layer\_AddV2\_186 (TensorFlo [(None, 10, 10, 64)]  0
+batch\_normalization\_339[0][0]
+max\_pooling2d\_109[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+re\_lu\_270 (ReLU)                 (None, 10, 10, 64)    0
+tf\_op\_layer\_AddV2\_186[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+conv2d\_443 (Conv2D)              (None, 10, 10, 64)    36928
+re\_lu\_270[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+batch\_normalization\_340 (BatchNo (None, 10, 10, 64)    256
+conv2d\_443[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+re\_lu\_271 (ReLU)                 (None, 10, 10, 64)    0
+batch\_normalization\_340[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+conv2d\_444 (Conv2D)              (None, 10, 10, 64)    36928
+re\_lu\_271[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+batch\_normalization\_341 (BatchNo (None, 10, 10, 64)    256
+conv2d\_444[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+tf\_op\_layer\_AddV2\_187 (TensorFlo [(None, 10, 10, 64)]  0
+batch\_normalization\_341[0][0]
+re\_lu\_270[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+re\_lu\_272 (ReLU)                 (None, 10, 10, 64)    0
+tf\_op\_layer\_AddV2\_187[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+conv2d\_446 (Conv2D)              (None, 10, 10, 64)    36928
+re\_lu\_272[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+batch\_normalization\_342 (BatchNo (None, 10, 10, 64)    256
+conv2d\_446[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+re\_lu\_273 (ReLU)                 (None, 10, 10, 64)    0
+batch\_normalization\_342[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+conv2d\_447 (Conv2D)              (None, 10, 10, 64)    36928
+re\_lu\_273[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+batch\_normalization\_343 (BatchNo (None, 10, 10, 64)    256
+conv2d\_447[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+conv2d\_445 (Conv2D)              (None, 10, 10, 1)     65
+re\_lu\_272[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+tf\_op\_layer\_AddV2\_188 (TensorFlo [(None, 10, 10, 64)]  0
+batch\_normalization\_343[0][0]
+conv2d\_445[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+re\_lu\_274 (ReLU)                 (None, 10, 10, 64)    0
+tf\_op\_layer\_AddV2\_188[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+conv2d\_448 (Conv2D)              (None, 10, 10, 64)    36928
+re\_lu\_274[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+batch\_normalization\_344 (BatchNo (None, 10, 10, 64)    256
+conv2d\_448[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+re\_lu\_275 (ReLU)                 (None, 10, 10, 64)    0
+batch\_normalization\_344[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+conv2d\_449 (Conv2D)              (None, 10, 10, 64)    36928
+re\_lu\_275[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+batch\_normalization\_345 (BatchNo (None, 10, 10, 64)    256
+conv2d\_449[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+tf\_op\_layer\_AddV2\_189 (TensorFlo [(None, 10, 10, 64)]  0
+batch\_normalization\_345[0][0]
+re\_lu\_274[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+re\_lu\_276 (ReLU)                 (None, 10, 10, 64)    0
+tf\_op\_layer\_AddV2\_189[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+global\_average\_pooling2d\_19 (Glo (None, 64)            0
+re\_lu\_276[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+flatten\_64 (Flatten)             (None, 64)            0
+global\_average\_pooling2d\_19[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+dense\_132 (Dense)                (None, 10)            650
+flatten\_64[0][0]
+================================================================================
+====================
+Total params: 307,915
+Trainable params: 306,763
+Non-trainable params: 1,152
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+    \end{Verbatim}
+ 
+            
+\prompt{Out}{outcolor}{202}{}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_43_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{203}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{history} \PY{o}{=} \PY{n}{model}\PY{o}{.}\PY{n}{fit}\PY{p}{(}\PY{n}{X\PYZus{}train}\PY{p}{,} \PY{n}{y\PYZus{}train\PYZus{}c}\PY{p}{,} \PY{n}{batch\PYZus{}size}\PY{o}{=}\PY{l+m+mi}{32}\PY{p}{,} \PY{n}{epochs}\PY{o}{=}\PY{l+m+mi}{25}\PY{p}{,} \PY{n}{verbose}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{validation\PYZus{}split}\PY{o}{=}\PY{l+m+mf}{0.2}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch 1/25
+1250/1250 [==============================] - 17s 14ms/step - loss: 1.4267 -
+accuracy: 0.4781 - val\_loss: 1.2674 - val\_accuracy: 0.5540
+Epoch 2/25
+1250/1250 [==============================] - 17s 14ms/step - loss: 1.0446 -
+accuracy: 0.6277 - val\_loss: 1.1313 - val\_accuracy: 0.6184
+Epoch 3/25
+1250/1250 [==============================] - 17s 14ms/step - loss: 0.8712 -
+accuracy: 0.6957 - val\_loss: 0.8972 - val\_accuracy: 0.6845
+Epoch 4/25
+1250/1250 [==============================] - 17s 14ms/step - loss: 0.7570 -
+accuracy: 0.7369 - val\_loss: 0.7521 - val\_accuracy: 0.7377
+Epoch 5/25
+1250/1250 [==============================] - 17s 14ms/step - loss: 0.6674 -
+accuracy: 0.7693 - val\_loss: 0.7141 - val\_accuracy: 0.7541
+Epoch 6/25
+1250/1250 [==============================] - 18s 14ms/step - loss: 0.5991 -
+accuracy: 0.7919 - val\_loss: 0.6664 - val\_accuracy: 0.7698
+Epoch 7/25
+1250/1250 [==============================] - 18s 14ms/step - loss: 0.5400 -
+accuracy: 0.8114 - val\_loss: 0.7106 - val\_accuracy: 0.7567
+Epoch 8/25
+1250/1250 [==============================] - 18s 14ms/step - loss: 0.4899 -
+accuracy: 0.8301 - val\_loss: 0.6753 - val\_accuracy: 0.7777
+Epoch 9/25
+1250/1250 [==============================] - 18s 14ms/step - loss: 0.4436 -
+accuracy: 0.8452 - val\_loss: 0.6175 - val\_accuracy: 0.7944
+Epoch 10/25
+1250/1250 [==============================] - 18s 14ms/step - loss: 0.4036 -
+accuracy: 0.8589 - val\_loss: 0.6039 - val\_accuracy: 0.8008
+Epoch 11/25
+1250/1250 [==============================] - 18s 14ms/step - loss: 0.3699 -
+accuracy: 0.8712 - val\_loss: 0.6423 - val\_accuracy: 0.7845
+Epoch 12/25
+1250/1250 [==============================] - 18s 15ms/step - loss: 0.3285 -
+accuracy: 0.8843 - val\_loss: 0.6434 - val\_accuracy: 0.7879
+Epoch 13/25
+1250/1250 [==============================] - 18s 15ms/step - loss: 0.2987 -
+accuracy: 0.8961 - val\_loss: 0.6467 - val\_accuracy: 0.7988
+Epoch 14/25
+1250/1250 [==============================] - 18s 15ms/step - loss: 0.2720 -
+accuracy: 0.9040 - val\_loss: 0.6503 - val\_accuracy: 0.8054
+Epoch 15/25
+1250/1250 [==============================] - 18s 15ms/step - loss: 0.2438 -
+accuracy: 0.9137 - val\_loss: 0.6666 - val\_accuracy: 0.7976
+Epoch 16/25
+1250/1250 [==============================] - 18s 15ms/step - loss: 0.2242 -
+accuracy: 0.9206 - val\_loss: 0.7194 - val\_accuracy: 0.7894
+Epoch 17/25
+1250/1250 [==============================] - 18s 15ms/step - loss: 0.1996 -
+accuracy: 0.9294 - val\_loss: 0.7303 - val\_accuracy: 0.7919
+Epoch 18/25
+1250/1250 [==============================] - 18s 15ms/step - loss: 0.1788 -
+accuracy: 0.9363 - val\_loss: 0.8029 - val\_accuracy: 0.7862
+Epoch 19/25
+1250/1250 [==============================] - 18s 14ms/step - loss: 0.1627 -
+accuracy: 0.9441 - val\_loss: 0.8326 - val\_accuracy: 0.7834
+Epoch 20/25
+1250/1250 [==============================] - 18s 14ms/step - loss: 0.1450 -
+accuracy: 0.9496 - val\_loss: 0.8036 - val\_accuracy: 0.7883
+Epoch 21/25
+1250/1250 [==============================] - 18s 15ms/step - loss: 0.1337 -
+accuracy: 0.9521 - val\_loss: 0.7792 - val\_accuracy: 0.7998
+Epoch 22/25
+1250/1250 [==============================] - 18s 14ms/step - loss: 0.1149 -
+accuracy: 0.9593 - val\_loss: 0.8379 - val\_accuracy: 0.7909
+Epoch 23/25
+1250/1250 [==============================] - 18s 15ms/step - loss: 0.1157 -
+accuracy: 0.9583 - val\_loss: 0.8043 - val\_accuracy: 0.8039
+Epoch 24/25
+1250/1250 [==============================] - 18s 14ms/step - loss: 0.1037 -
+accuracy: 0.9642 - val\_loss: 0.8109 - val\_accuracy: 0.8059
+Epoch 25/25
+1250/1250 [==============================] - 18s 15ms/step - loss: 0.0990 -
+accuracy: 0.9647 - val\_loss: 0.8412 - val\_accuracy: 0.8019
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{204}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{score} \PY{o}{=} \PY{n}{model}\PY{o}{.}\PY{n}{evaluate}\PY{p}{(}\PY{n}{X\PYZus{}test}\PY{p}{,} \PY{n}{y\PYZus{}test\PYZus{}c}\PY{p}{,} \PY{n}{batch\PYZus{}size}\PY{o}{=}\PY{l+m+mi}{128}\PY{p}{,} \PY{n}{verbose}\PY{o}{=}\PY{l+m+mi}{0}\PY{p}{)}
+
+\PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{score}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Test }\PY{l+s+s2}{\PYZdq{}} \PY{o}{+} \PY{n}{model}\PY{o}{.}\PY{n}{metrics\PYZus{}names}\PY{p}{[}\PY{n}{i}\PY{p}{]} \PY{o}{+} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ = }\PY{l+s+si}{\PYZpc{}.3f}\PY{l+s+s2}{\PYZdq{}} \PY{o}{\PYZpc{}} \PY{n}{score}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Test loss = 0.844
+Test accuracy = 0.799
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{205}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{PlotModelEval}\PY{p}{(}\PY{n}{model}\PY{p}{,} \PY{n}{history}\PY{p}{,} \PY{n}{X\PYZus{}test}\PY{p}{,} \PY{n}{y\PYZus{}test}\PY{p}{,} \PY{n}{cifar\PYZus{}labels}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_46_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{question-10}{%
+\paragraph{\texorpdfstring{\textbf{{Question
+10:}}}{Question 10:}}\label{question-10}}
+
+Design and train a model that achieves at least 75\% test accuracy in at
+most 25 epochs. Save the evaluation image for the report. Also, in the
+report you should explain your model and motivate the design choices you
+have made.
+
+    \hypertarget{want-some-extra-challenge}{%
+\subsubsection{\texorpdfstring{\textbf{Want some extra
+challenge?}}{Want some extra challenge?}}\label{want-some-extra-challenge}}
+
+For those of you that feel the competitive spark right now, we will hold
+an \textbf{optional} competition where you can submit your trained
+model-file for evaluation. To make this fair, you are not allowed to
+train for more than \textbf{50 epochs}, but other than that we want you
+to get creative. The competition is simple, we will evaluate all
+submitted models and the model with highest test accuracy wins. The
+prize is nothing less than eternal glory.
+
+Here are some things to look into, but note that we don't have the
+answers here. Any of these might improve the performance, or might not,
+or it might only work in combination with each other. This is up to you
+to figure out. This is how deep learning research often happens, trying
+things in a smart way to see what works best. * Tweak or change the
+optimizer or training parameters. * Tweak the filter parameters, such as
+numbers and sizes of filters. * Use other activation functions. * Add
+L1/L2 regularization (see
+https://www.tensorflow.org/api\_docs/python/tf/keras/regularizers) *
+Include layers that we did not cover here (see
+https://www.tensorflow.org/api\_docs/python/tf/keras/layers). For
+example, our best model uses the global pooling layers. * Take
+inspiration from some well-known architectures, such as ResNet or VGG16.
+(But don't just copy-paste those architectures. For one, what's the fun
+in that? Also, they take a long time to train, you will not have time.)
+* Use explicit model ensembing (training multiple models that vote on or
+average the outputs - this will also take a lot of time.) * Use data
+augmentation to create a larger training set (see
+https://www.tensorflow.org/api\_docs/python/tf/keras/preprocessing/image/ImageDataGenerator).
+
+Write your competition model here. This way you can try different things
+without deleting the model you created above. Also set the GroupName
+variable to your LiU IDs or some unique name; that way our scripts can
+be a lot easier, thanks and good luck :)
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{200}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{GroupName} \PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{test}\PY{l+s+s2}{\PYZdq{}}
+
+\PY{n}{x\PYZus{}in} \PY{o}{=} \PY{n}{Input}\PY{p}{(}\PY{n}{shape}\PY{o}{=}\PY{n}{X\PYZus{}train}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{:}\PY{p}{]}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} === Add your code here ===}
+\PY{n}{k}\PY{o}{=}\PY{l+m+mi}{64}
+\PY{n}{i}\PY{o}{=}\PY{l+m+mi}{64}
+\PY{n}{m}\PY{o}{=}\PY{l+m+mf}{0.5} 
+\PY{n}{x} \PY{o}{=} \PY{n}{Conv2D}\PY{p}{(}\PY{n}{k}\PY{p}{,} \PY{l+m+mi}{7}\PY{p}{,}\PY{n}{padding} \PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{same}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{(}\PY{n}{x\PYZus{}in}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{BatchNormalization}\PY{p}{(}\PY{n}{momentum} \PY{o}{=}\PY{n}{m}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{MaxPooling2D}\PY{p}{(}\PY{n}{pool\PYZus{}size}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{)}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{Dropout}\PY{p}{(}\PY{l+m+mf}{0.2}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+
+\PY{n}{y} \PY{o}{=} \PY{n}{x}
+\PY{n}{a} \PY{o}{=} \PY{n}{x}
+\PY{n}{x} \PY{o}{=} \PY{n}{Conv2D}\PY{p}{(}\PY{n}{k}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{,}\PY{n}{padding} \PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{same}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{BatchNormalization}\PY{p}{(}\PY{n}{momentum} \PY{o}{=}\PY{n}{m}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{ReLU}\PY{p}{(}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{Conv2D}\PY{p}{(}\PY{n}{k}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{,}\PY{n}{padding} \PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{same}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{BatchNormalization}\PY{p}{(}\PY{n}{momentum} \PY{o}{=}\PY{n}{m}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{Dropout}\PY{p}{(}\PY{l+m+mf}{0.2}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{x}\PY{o}{=}\PY{n}{x}\PY{o}{+}\PY{n}{y}
+\PY{n}{b}\PY{o}{=}\PY{n}{x}
+\PY{n}{x} \PY{o}{=} \PY{n}{ReLU}\PY{p}{(}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{y} \PY{o}{=} \PY{n}{x}\PY{o}{+}\PY{n}{a}
+
+\PY{n}{x} \PY{o}{=} \PY{n}{Conv2D}\PY{p}{(}\PY{n}{k}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{,}\PY{n}{padding} \PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{same}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{BatchNormalization}\PY{p}{(}\PY{n}{momentum} \PY{o}{=}\PY{n}{m}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{ReLU}\PY{p}{(}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{Conv2D}\PY{p}{(}\PY{n}{k}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{,}\PY{n}{padding} \PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{same}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{BatchNormalization}\PY{p}{(}\PY{n}{momentum} \PY{o}{=}\PY{n}{m}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+
+\PY{n}{x}\PY{o}{=}\PY{n}{x}\PY{o}{+}\PY{n}{y}\PY{o}{+}\PY{n}{a}\PY{o}{+}\PY{n}{b}
+\PY{n}{c}\PY{o}{=}\PY{n}{x}
+\PY{n}{x} \PY{o}{=} \PY{n}{Dropout}\PY{p}{(}\PY{l+m+mf}{0.5}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{ReLU}\PY{p}{(}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{y} \PY{o}{=} \PY{n}{x}
+\PY{n}{y} \PY{o}{=} \PY{n}{Conv2D}\PY{p}{(}\PY{n}{i}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{,}\PY{n}{padding} \PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{same}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{(}\PY{n}{y}\PY{p}{)}
+
+\PY{n}{x} \PY{o}{=} \PY{n}{Conv2D}\PY{p}{(}\PY{n}{k}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{,}\PY{n}{padding} \PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{same}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{BatchNormalization}\PY{p}{(}\PY{n}{momentum} \PY{o}{=}\PY{n}{m}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{ReLU}\PY{p}{(}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{Conv2D}\PY{p}{(}\PY{n}{k}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{,}\PY{n}{padding} \PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{same}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{BatchNormalization}\PY{p}{(}\PY{n}{momentum} \PY{o}{=}\PY{n}{m}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{Dropout}\PY{p}{(}\PY{l+m+mf}{0.2}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{x}\PY{o}{=}\PY{n}{x}\PY{o}{+}\PY{n}{y}
+
+\PY{n}{x} \PY{o}{=} \PY{n}{ReLU}\PY{p}{(}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{y} \PY{o}{=} \PY{n}{x}\PY{o}{+}\PY{n}{y}\PY{o}{+}\PY{n}{a}\PY{o}{+}\PY{n}{b}\PY{o}{+}\PY{n}{c}
+
+\PY{n}{x} \PY{o}{=} \PY{n}{Conv2D}\PY{p}{(}\PY{n}{k}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{,}\PY{n}{padding} \PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{same}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{BatchNormalization}\PY{p}{(}\PY{n}{momentum} \PY{o}{=}\PY{n}{m}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{ReLU}\PY{p}{(}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{Conv2D}\PY{p}{(}\PY{n}{k}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{,}\PY{n}{padding} \PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{same}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{BatchNormalization}\PY{p}{(}\PY{n}{momentum} \PY{o}{=}\PY{n}{m}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+
+\PY{n}{x}\PY{o}{=}\PY{n}{x}\PY{o}{+}\PY{n}{y}\PY{o}{+}\PY{n}{a}\PY{o}{+}\PY{n}{b}\PY{o}{+}\PY{n}{c}
+
+\PY{n}{x} \PY{o}{=} \PY{n}{ReLU}\PY{p}{(}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{GlobalAveragePooling2D}\PY{p}{(}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+
+\PY{n}{x} \PY{o}{=} \PY{n}{Flatten}\PY{p}{(}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{n}{x} \PY{o}{=} \PY{n}{Dense}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{,} \PY{n}{activation}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{softmax}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} ==========================}
+
+\PY{n}{model} \PY{o}{=} \PY{n}{Model}\PY{p}{(}\PY{n}{inputs}\PY{o}{=}\PY{n}{x\PYZus{}in}\PY{p}{,} \PY{n}{outputs}\PY{o}{=}\PY{n}{x}\PY{p}{,} \PY{n}{name}\PY{o}{=}\PY{n}{GroupName}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} You can also change this if you want}
+\PY{n}{sgd} \PY{o}{=} \PY{n}{SGD}\PY{p}{(}\PY{n}{lr}\PY{o}{=}\PY{l+m+mf}{0.01}\PY{p}{,} \PY{n}{decay}\PY{o}{=}\PY{l+m+mf}{1e\PYZhy{}6}\PY{p}{,} \PY{n}{momentum}\PY{o}{=}\PY{l+m+mf}{0.9}\PY{p}{,} \PY{n}{nesterov}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\PY{n}{model}\PY{o}{.}\PY{n}{compile}\PY{p}{(}\PY{n}{loss}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{categorical\PYZus{}crossentropy}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{metrics}\PY{o}{=}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{accuracy}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,} \PY{n}{optimizer}\PY{o}{=}\PY{n}{sgd}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Print the summary and model image}
+\PY{n}{model}\PY{o}{.}\PY{n}{summary}\PY{p}{(}\PY{l+m+mi}{100}\PY{p}{)}
+\PY{n}{plot\PYZus{}model}\PY{p}{(}\PY{n}{model}\PY{p}{,} \PY{n}{show\PYZus{}shapes}\PY{o}{=}\PY{k+kc}{True}\PY{p}{,} \PY{n}{show\PYZus{}layer\PYZus{}names}\PY{o}{=}\PY{k+kc}{False}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Model: "test"
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+Layer (type)                     Output Shape          Param \#     Connected to
+================================================================================
+====================
+input\_92 (InputLayer)            [(None, 32, 32, 3)]   0
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+conv2d\_430 (Conv2D)              (None, 32, 32, 64)    9472
+input\_92[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+batch\_normalization\_328 (BatchNo (None, 32, 32, 64)    256
+conv2d\_430[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+max\_pooling2d\_108 (MaxPooling2D) (None, 10, 10, 64)    0
+batch\_normalization\_328[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+dropout\_49 (Dropout)             (None, 10, 10, 64)    0
+max\_pooling2d\_108[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+conv2d\_431 (Conv2D)              (None, 10, 10, 64)    36928
+dropout\_49[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+batch\_normalization\_329 (BatchNo (None, 10, 10, 64)    256
+conv2d\_431[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+re\_lu\_261 (ReLU)                 (None, 10, 10, 64)    0
+batch\_normalization\_329[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+conv2d\_432 (Conv2D)              (None, 10, 10, 64)    36928
+re\_lu\_261[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+batch\_normalization\_330 (BatchNo (None, 10, 10, 64)    256
+conv2d\_432[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+dropout\_50 (Dropout)             (None, 10, 10, 64)    0
+batch\_normalization\_330[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+tf\_op\_layer\_AddV2\_172 (TensorFlo [(None, 10, 10, 64)]  0
+dropout\_50[0][0]
+dropout\_49[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+re\_lu\_262 (ReLU)                 (None, 10, 10, 64)    0
+tf\_op\_layer\_AddV2\_172[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+conv2d\_433 (Conv2D)              (None, 10, 10, 64)    36928
+re\_lu\_262[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+batch\_normalization\_331 (BatchNo (None, 10, 10, 64)    256
+conv2d\_433[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+re\_lu\_263 (ReLU)                 (None, 10, 10, 64)    0
+batch\_normalization\_331[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+conv2d\_434 (Conv2D)              (None, 10, 10, 64)    36928
+re\_lu\_263[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+batch\_normalization\_332 (BatchNo (None, 10, 10, 64)    256
+conv2d\_434[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+tf\_op\_layer\_AddV2\_173 (TensorFlo [(None, 10, 10, 64)]  0
+re\_lu\_262[0][0]
+dropout\_49[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+tf\_op\_layer\_AddV2\_174 (TensorFlo [(None, 10, 10, 64)]  0
+batch\_normalization\_332[0][0]
+tf\_op\_layer\_AddV2\_173[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+tf\_op\_layer\_AddV2\_175 (TensorFlo [(None, 10, 10, 64)]  0
+tf\_op\_layer\_AddV2\_174[0][0]
+dropout\_49[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+tf\_op\_layer\_AddV2\_176 (TensorFlo [(None, 10, 10, 64)]  0
+tf\_op\_layer\_AddV2\_175[0][0]
+tf\_op\_layer\_AddV2\_172[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+dropout\_51 (Dropout)             (None, 10, 10, 64)    0
+tf\_op\_layer\_AddV2\_176[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+re\_lu\_264 (ReLU)                 (None, 10, 10, 64)    0
+dropout\_51[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+conv2d\_436 (Conv2D)              (None, 10, 10, 64)    36928
+re\_lu\_264[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+batch\_normalization\_333 (BatchNo (None, 10, 10, 64)    256
+conv2d\_436[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+re\_lu\_265 (ReLU)                 (None, 10, 10, 64)    0
+batch\_normalization\_333[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+conv2d\_437 (Conv2D)              (None, 10, 10, 64)    36928
+re\_lu\_265[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+batch\_normalization\_334 (BatchNo (None, 10, 10, 64)    256
+conv2d\_437[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+dropout\_52 (Dropout)             (None, 10, 10, 64)    0
+batch\_normalization\_334[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+conv2d\_435 (Conv2D)              (None, 10, 10, 64)    4160
+re\_lu\_264[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+tf\_op\_layer\_AddV2\_177 (TensorFlo [(None, 10, 10, 64)]  0
+dropout\_52[0][0]
+conv2d\_435[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+re\_lu\_266 (ReLU)                 (None, 10, 10, 64)    0
+tf\_op\_layer\_AddV2\_177[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+conv2d\_438 (Conv2D)              (None, 10, 10, 64)    36928
+re\_lu\_266[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+batch\_normalization\_335 (BatchNo (None, 10, 10, 64)    256
+conv2d\_438[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+tf\_op\_layer\_AddV2\_178 (TensorFlo [(None, 10, 10, 64)]  0
+re\_lu\_266[0][0]
+conv2d\_435[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+re\_lu\_267 (ReLU)                 (None, 10, 10, 64)    0
+batch\_normalization\_335[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+tf\_op\_layer\_AddV2\_179 (TensorFlo [(None, 10, 10, 64)]  0
+tf\_op\_layer\_AddV2\_178[0][0]
+dropout\_49[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+conv2d\_439 (Conv2D)              (None, 10, 10, 64)    36928
+re\_lu\_267[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+tf\_op\_layer\_AddV2\_180 (TensorFlo [(None, 10, 10, 64)]  0
+tf\_op\_layer\_AddV2\_179[0][0]
+tf\_op\_layer\_AddV2\_172[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+batch\_normalization\_336 (BatchNo (None, 10, 10, 64)    256
+conv2d\_439[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+tf\_op\_layer\_AddV2\_181 (TensorFlo [(None, 10, 10, 64)]  0
+tf\_op\_layer\_AddV2\_180[0][0]
+tf\_op\_layer\_AddV2\_176[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+tf\_op\_layer\_AddV2\_182 (TensorFlo [(None, 10, 10, 64)]  0
+batch\_normalization\_336[0][0]
+tf\_op\_layer\_AddV2\_181[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+tf\_op\_layer\_AddV2\_183 (TensorFlo [(None, 10, 10, 64)]  0
+tf\_op\_layer\_AddV2\_182[0][0]
+dropout\_49[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+tf\_op\_layer\_AddV2\_184 (TensorFlo [(None, 10, 10, 64)]  0
+tf\_op\_layer\_AddV2\_183[0][0]
+tf\_op\_layer\_AddV2\_172[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+tf\_op\_layer\_AddV2\_185 (TensorFlo [(None, 10, 10, 64)]  0
+tf\_op\_layer\_AddV2\_184[0][0]
+tf\_op\_layer\_AddV2\_176[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+re\_lu\_268 (ReLU)                 (None, 10, 10, 64)    0
+tf\_op\_layer\_AddV2\_185[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+global\_average\_pooling2d\_18 (Glo (None, 64)            0
+re\_lu\_268[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+flatten\_63 (Flatten)             (None, 64)            0
+global\_average\_pooling2d\_18[0][0]
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+dense\_131 (Dense)                (None, 10)            650
+flatten\_63[0][0]
+================================================================================
+====================
+Total params: 312,010
+Trainable params: 310,858
+Non-trainable params: 1,152
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+    \end{Verbatim}
+ 
+            
+\prompt{Out}{outcolor}{200}{}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_49_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{201}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{history} \PY{o}{=} \PY{n}{model}\PY{o}{.}\PY{n}{fit}\PY{p}{(}\PY{n}{X\PYZus{}train}\PY{p}{,} \PY{n}{y\PYZus{}train\PYZus{}c}\PY{p}{,} \PY{n}{batch\PYZus{}size}\PY{o}{=}\PY{l+m+mi}{32}\PY{p}{,} \PY{n}{epochs}\PY{o}{=}\PY{l+m+mi}{50}\PY{p}{,} \PY{n}{verbose}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{validation\PYZus{}split}\PY{o}{=}\PY{l+m+mf}{0.2}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Epoch 1/50
+1250/1250 [==============================] - 18s 15ms/step - loss: 1.9134 -
+accuracy: 0.3612 - val\_loss: 1.6088 - val\_accuracy: 0.4084
+Epoch 2/50
+1250/1250 [==============================] - 18s 14ms/step - loss: 1.4290 -
+accuracy: 0.4782 - val\_loss: 1.5877 - val\_accuracy: 0.4426
+Epoch 3/50
+1250/1250 [==============================] - 18s 14ms/step - loss: 1.2702 -
+accuracy: 0.5433 - val\_loss: 1.1903 - val\_accuracy: 0.5730
+Epoch 4/50
+1250/1250 [==============================] - 18s 14ms/step - loss: 1.1643 -
+accuracy: 0.5803 - val\_loss: 1.0950 - val\_accuracy: 0.6092
+Epoch 5/50
+1250/1250 [==============================] - 18s 14ms/step - loss: 1.0889 -
+accuracy: 0.6112 - val\_loss: 1.0310 - val\_accuracy: 0.6214
+Epoch 6/50
+1250/1250 [==============================] - 18s 15ms/step - loss: 1.0237 -
+accuracy: 0.6356 - val\_loss: 1.0376 - val\_accuracy: 0.6325
+Epoch 7/50
+1250/1250 [==============================] - 18s 15ms/step - loss: 0.9724 -
+accuracy: 0.6528 - val\_loss: 0.9298 - val\_accuracy: 0.6720
+Epoch 8/50
+1250/1250 [==============================] - 18s 15ms/step - loss: 0.9260 -
+accuracy: 0.6704 - val\_loss: 0.8863 - val\_accuracy: 0.6833
+Epoch 9/50
+1250/1250 [==============================] - 18s 15ms/step - loss: 0.8843 -
+accuracy: 0.6870 - val\_loss: 0.8479 - val\_accuracy: 0.6943
+Epoch 10/50
+1250/1250 [==============================] - 19s 15ms/step - loss: 0.8400 -
+accuracy: 0.7039 - val\_loss: 0.8580 - val\_accuracy: 0.6978
+Epoch 11/50
+1250/1250 [==============================] - 18s 15ms/step - loss: 0.8011 -
+accuracy: 0.7185 - val\_loss: 0.8809 - val\_accuracy: 0.6959
+Epoch 12/50
+1250/1250 [==============================] - 19s 15ms/step - loss: 0.7663 -
+accuracy: 0.7284 - val\_loss: 0.7752 - val\_accuracy: 0.7311
+Epoch 13/50
+1250/1250 [==============================] - 19s 15ms/step - loss: 0.7403 -
+accuracy: 0.7400 - val\_loss: 0.7185 - val\_accuracy: 0.7502
+Epoch 14/50
+1250/1250 [==============================] - 19s 15ms/step - loss: 0.7095 -
+accuracy: 0.7514 - val\_loss: 0.7187 - val\_accuracy: 0.7531
+Epoch 15/50
+1250/1250 [==============================] - 19s 15ms/step - loss: 0.6825 -
+accuracy: 0.7604 - val\_loss: 0.7395 - val\_accuracy: 0.7462
+Epoch 16/50
+1250/1250 [==============================] - 19s 15ms/step - loss: 0.6609 -
+accuracy: 0.7668 - val\_loss: 0.7722 - val\_accuracy: 0.7402
+Epoch 17/50
+1250/1250 [==============================] - 19s 15ms/step - loss: 0.6406 -
+accuracy: 0.7760 - val\_loss: 0.6953 - val\_accuracy: 0.7598
+Epoch 18/50
+1250/1250 [==============================] - 19s 15ms/step - loss: 0.6177 -
+accuracy: 0.7857 - val\_loss: 0.6635 - val\_accuracy: 0.7745
+Epoch 19/50
+1250/1250 [==============================] - 19s 15ms/step - loss: 0.6014 -
+accuracy: 0.7865 - val\_loss: 0.6457 - val\_accuracy: 0.7779
+Epoch 20/50
+1250/1250 [==============================] - 19s 15ms/step - loss: 0.5818 -
+accuracy: 0.7960 - val\_loss: 0.6339 - val\_accuracy: 0.7817
+Epoch 21/50
+1250/1250 [==============================] - 19s 15ms/step - loss: 0.5663 -
+accuracy: 0.8017 - val\_loss: 0.6380 - val\_accuracy: 0.7858
+Epoch 22/50
+1250/1250 [==============================] - 19s 15ms/step - loss: 0.5517 -
+accuracy: 0.8071 - val\_loss: 0.6475 - val\_accuracy: 0.7864
+Epoch 23/50
+1250/1250 [==============================] - 19s 15ms/step - loss: 0.5422 -
+accuracy: 0.8083 - val\_loss: 0.6054 - val\_accuracy: 0.7944
+Epoch 24/50
+1250/1250 [==============================] - 19s 15ms/step - loss: 0.5253 -
+accuracy: 0.8170 - val\_loss: 0.6378 - val\_accuracy: 0.7900
+Epoch 25/50
+1250/1250 [==============================] - 19s 15ms/step - loss: 0.5175 -
+accuracy: 0.8188 - val\_loss: 0.6026 - val\_accuracy: 0.7966
+Epoch 26/50
+1250/1250 [==============================] - 19s 15ms/step - loss: 0.5027 -
+accuracy: 0.8231 - val\_loss: 0.6373 - val\_accuracy: 0.7898
+Epoch 27/50
+1250/1250 [==============================] - 19s 15ms/step - loss: 0.4947 -
+accuracy: 0.8256 - val\_loss: 0.6294 - val\_accuracy: 0.7943
+Epoch 28/50
+1250/1250 [==============================] - 18s 15ms/step - loss: 0.4791 -
+accuracy: 0.8318 - val\_loss: 0.6458 - val\_accuracy: 0.7906
+Epoch 29/50
+ 451/1250 [=========>{\ldots}] - ETA: 10s - loss: 0.4694 - accuracy:
+0.8368
+    \end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}, frame=single, framerule=2mm, rulecolor=\color{outerrorbackground}]
+\textcolor{ansi-red}{---------------------------------------------------------------------------}
+\textcolor{ansi-red}{KeyboardInterrupt}                         Traceback (most recent call last)
+\textcolor{ansi-green}{<ipython-input-201-8943ee332e31>} in \textcolor{ansi-cyan}{<module>}
+\textcolor{ansi-green}{----> 1}\textcolor{ansi-red}{ }history \textcolor{ansi-blue}{=} model\textcolor{ansi-blue}{.}fit\textcolor{ansi-blue}{(}X\_train\textcolor{ansi-blue}{,} y\_train\_c\textcolor{ansi-blue}{,} batch\_size\textcolor{ansi-blue}{=}\textcolor{ansi-cyan}{32}\textcolor{ansi-blue}{,} epochs\textcolor{ansi-blue}{=}\textcolor{ansi-cyan}{50}\textcolor{ansi-blue}{,} verbose\textcolor{ansi-blue}{=}\textcolor{ansi-cyan}{1}\textcolor{ansi-blue}{,} validation\_split\textcolor{ansi-blue}{=}\textcolor{ansi-cyan}{0.2}\textcolor{ansi-blue}{)}
+
+\textcolor{ansi-green}{/anaconda/envs/lab\_test/lib/python3.8/site-packages/tensorflow/python/keras/engine/training.py} in \textcolor{ansi-cyan}{\_method\_wrapper}\textcolor{ansi-blue}{(self, *args, **kwargs)}
+\textcolor{ansi-green-intense}{\textbf{     64}}   \textcolor{ansi-green}{def} \_method\_wrapper\textcolor{ansi-blue}{(}self\textcolor{ansi-blue}{,} \textcolor{ansi-blue}{*}args\textcolor{ansi-blue}{,} \textcolor{ansi-blue}{**}kwargs\textcolor{ansi-blue}{)}\textcolor{ansi-blue}{:}
+\textcolor{ansi-green-intense}{\textbf{     65}}     \textcolor{ansi-green}{if} \textcolor{ansi-green}{not} self\textcolor{ansi-blue}{.}\_in\_multi\_worker\_mode\textcolor{ansi-blue}{(}\textcolor{ansi-blue}{)}\textcolor{ansi-blue}{:}  \textcolor{ansi-red}{\# pylint: disable=protected-access}
+\textcolor{ansi-green}{---> 66}\textcolor{ansi-red}{       }\textcolor{ansi-green}{return} method\textcolor{ansi-blue}{(}self\textcolor{ansi-blue}{,} \textcolor{ansi-blue}{*}args\textcolor{ansi-blue}{,} \textcolor{ansi-blue}{**}kwargs\textcolor{ansi-blue}{)}
+\textcolor{ansi-green-intense}{\textbf{     67}} 
+\textcolor{ansi-green-intense}{\textbf{     68}}     \textcolor{ansi-red}{\# Running inside `run\_distribute\_coordinator` already.}
+
+\textcolor{ansi-green}{/anaconda/envs/lab\_test/lib/python3.8/site-packages/tensorflow/python/keras/engine/training.py} in \textcolor{ansi-cyan}{fit}\textcolor{ansi-blue}{(self, x, y, batch\_size, epochs, verbose, callbacks, validation\_split, validation\_data, shuffle, class\_weight, sample\_weight, initial\_epoch, steps\_per\_epoch, validation\_steps, validation\_batch\_size, validation\_freq, max\_queue\_size, workers, use\_multiprocessing)}
+\textcolor{ansi-green-intense}{\textbf{    846}}                 batch\_size=batch\_size):
+\textcolor{ansi-green-intense}{\textbf{    847}}               callbacks\textcolor{ansi-blue}{.}on\_train\_batch\_begin\textcolor{ansi-blue}{(}step\textcolor{ansi-blue}{)}
+\textcolor{ansi-green}{--> 848}\textcolor{ansi-red}{               }tmp\_logs \textcolor{ansi-blue}{=} train\_function\textcolor{ansi-blue}{(}iterator\textcolor{ansi-blue}{)}
+\textcolor{ansi-green-intense}{\textbf{    849}}               \textcolor{ansi-red}{\# Catch OutOfRangeError for Datasets of unknown size.}
+\textcolor{ansi-green-intense}{\textbf{    850}}               \textcolor{ansi-red}{\# This blocks until the batch has finished executing.}
+
+\textcolor{ansi-green}{/anaconda/envs/lab\_test/lib/python3.8/site-packages/tensorflow/python/eager/def\_function.py} in \textcolor{ansi-cyan}{\_\_call\_\_}\textcolor{ansi-blue}{(self, *args, **kwds)}
+\textcolor{ansi-green-intense}{\textbf{    578}}         xla\_context\textcolor{ansi-blue}{.}Exit\textcolor{ansi-blue}{(}\textcolor{ansi-blue}{)}
+\textcolor{ansi-green-intense}{\textbf{    579}}     \textcolor{ansi-green}{else}\textcolor{ansi-blue}{:}
+\textcolor{ansi-green}{--> 580}\textcolor{ansi-red}{       }result \textcolor{ansi-blue}{=} self\textcolor{ansi-blue}{.}\_call\textcolor{ansi-blue}{(}\textcolor{ansi-blue}{*}args\textcolor{ansi-blue}{,} \textcolor{ansi-blue}{**}kwds\textcolor{ansi-blue}{)}
+\textcolor{ansi-green-intense}{\textbf{    581}} 
+\textcolor{ansi-green-intense}{\textbf{    582}}     \textcolor{ansi-green}{if} tracing\_count \textcolor{ansi-blue}{==} self\textcolor{ansi-blue}{.}\_get\_tracing\_count\textcolor{ansi-blue}{(}\textcolor{ansi-blue}{)}\textcolor{ansi-blue}{:}
+
+\textcolor{ansi-green}{/anaconda/envs/lab\_test/lib/python3.8/site-packages/tensorflow/python/eager/def\_function.py} in \textcolor{ansi-cyan}{\_call}\textcolor{ansi-blue}{(self, *args, **kwds)}
+\textcolor{ansi-green-intense}{\textbf{    609}}       \textcolor{ansi-red}{\# In this case we have created variables on the first call, so we run the}
+\textcolor{ansi-green-intense}{\textbf{    610}}       \textcolor{ansi-red}{\# defunned version which is guaranteed to never create variables.}
+\textcolor{ansi-green}{--> 611}\textcolor{ansi-red}{       }\textcolor{ansi-green}{return} self\textcolor{ansi-blue}{.}\_stateless\_fn\textcolor{ansi-blue}{(}\textcolor{ansi-blue}{*}args\textcolor{ansi-blue}{,} \textcolor{ansi-blue}{**}kwds\textcolor{ansi-blue}{)}  \textcolor{ansi-red}{\# pylint: disable=not-callable}
+\textcolor{ansi-green-intense}{\textbf{    612}}     \textcolor{ansi-green}{elif} self\textcolor{ansi-blue}{.}\_stateful\_fn \textcolor{ansi-green}{is} \textcolor{ansi-green}{not} \textcolor{ansi-green}{None}\textcolor{ansi-blue}{:}
+\textcolor{ansi-green-intense}{\textbf{    613}}       \textcolor{ansi-red}{\# Release the lock early so that multiple threads can perform the call}
+
+\textcolor{ansi-green}{/anaconda/envs/lab\_test/lib/python3.8/site-packages/tensorflow/python/eager/function.py} in \textcolor{ansi-cyan}{\_\_call\_\_}\textcolor{ansi-blue}{(self, *args, **kwargs)}
+\textcolor{ansi-green-intense}{\textbf{   2418}}     \textcolor{ansi-green}{with} self\textcolor{ansi-blue}{.}\_lock\textcolor{ansi-blue}{:}
+\textcolor{ansi-green-intense}{\textbf{   2419}}       graph\_function\textcolor{ansi-blue}{,} args\textcolor{ansi-blue}{,} kwargs \textcolor{ansi-blue}{=} self\textcolor{ansi-blue}{.}\_maybe\_define\_function\textcolor{ansi-blue}{(}args\textcolor{ansi-blue}{,} kwargs\textcolor{ansi-blue}{)}
+\textcolor{ansi-green}{-> 2420}\textcolor{ansi-red}{     }\textcolor{ansi-green}{return} graph\_function\textcolor{ansi-blue}{.}\_filtered\_call\textcolor{ansi-blue}{(}args\textcolor{ansi-blue}{,} kwargs\textcolor{ansi-blue}{)}  \textcolor{ansi-red}{\# pylint: disable=protected-access}
+\textcolor{ansi-green-intense}{\textbf{   2421}} 
+\textcolor{ansi-green-intense}{\textbf{   2422}}   \textcolor{ansi-blue}{@}property
+
+\textcolor{ansi-green}{/anaconda/envs/lab\_test/lib/python3.8/site-packages/tensorflow/python/eager/function.py} in \textcolor{ansi-cyan}{\_filtered\_call}\textcolor{ansi-blue}{(self, args, kwargs)}
+\textcolor{ansi-green-intense}{\textbf{   1659}}       \textcolor{ansi-red}{`}args\textcolor{ansi-red}{`} \textcolor{ansi-green}{and}\textcolor{ansi-red}{ }\textcolor{ansi-red}{`}kwargs\textcolor{ansi-red}{`}\textcolor{ansi-blue}{.}
+\textcolor{ansi-green-intense}{\textbf{   1660}}     """
+\textcolor{ansi-green}{-> 1661}\textcolor{ansi-red}{     return self.\_call\_flat(
+}\textcolor{ansi-green-intense}{\textbf{   1662}}         (t for t in nest.flatten((args, kwargs), expand\_composites=True)
+\textcolor{ansi-green-intense}{\textbf{   1663}}          if isinstance(t, (ops.Tensor,
+
+\textcolor{ansi-green}{/anaconda/envs/lab\_test/lib/python3.8/site-packages/tensorflow/python/eager/function.py} in \textcolor{ansi-cyan}{\_call\_flat}\textcolor{ansi-blue}{(self, args, captured\_inputs, cancellation\_manager)}
+\textcolor{ansi-green-intense}{\textbf{   1743}}         and executing\_eagerly):
+\textcolor{ansi-green-intense}{\textbf{   1744}}       \textcolor{ansi-red}{\# No tape is watching; skip to running the function.}
+\textcolor{ansi-green}{-> 1745}\textcolor{ansi-red}{       return self.\_build\_call\_outputs(self.\_inference\_function.call(
+}\textcolor{ansi-green-intense}{\textbf{   1746}}           ctx, args, cancellation\_manager=cancellation\_manager))
+\textcolor{ansi-green-intense}{\textbf{   1747}}     forward\_backward = self.\_select\_forward\_and\_backward\_functions(
+
+\textcolor{ansi-green}{/anaconda/envs/lab\_test/lib/python3.8/site-packages/tensorflow/python/eager/function.py} in \textcolor{ansi-cyan}{call}\textcolor{ansi-blue}{(self, ctx, args, cancellation\_manager)}
+\textcolor{ansi-green-intense}{\textbf{    591}}       \textcolor{ansi-green}{with} \_InterpolateFunctionError\textcolor{ansi-blue}{(}self\textcolor{ansi-blue}{)}\textcolor{ansi-blue}{:}
+\textcolor{ansi-green-intense}{\textbf{    592}}         \textcolor{ansi-green}{if} cancellation\_manager \textcolor{ansi-green}{is} \textcolor{ansi-green}{None}\textcolor{ansi-blue}{:}
+\textcolor{ansi-green}{--> 593}\textcolor{ansi-red}{           outputs = execute.execute(
+}\textcolor{ansi-green-intense}{\textbf{    594}}               str\textcolor{ansi-blue}{(}self\textcolor{ansi-blue}{.}signature\textcolor{ansi-blue}{.}name\textcolor{ansi-blue}{)}\textcolor{ansi-blue}{,}
+\textcolor{ansi-green-intense}{\textbf{    595}}               num\_outputs\textcolor{ansi-blue}{=}self\textcolor{ansi-blue}{.}\_num\_outputs\textcolor{ansi-blue}{,}
+
+\textcolor{ansi-green}{/anaconda/envs/lab\_test/lib/python3.8/site-packages/tensorflow/python/eager/execute.py} in \textcolor{ansi-cyan}{quick\_execute}\textcolor{ansi-blue}{(op\_name, num\_outputs, inputs, attrs, ctx, name)}
+\textcolor{ansi-green-intense}{\textbf{     57}}   \textcolor{ansi-green}{try}\textcolor{ansi-blue}{:}
+\textcolor{ansi-green-intense}{\textbf{     58}}     ctx\textcolor{ansi-blue}{.}ensure\_initialized\textcolor{ansi-blue}{(}\textcolor{ansi-blue}{)}
+\textcolor{ansi-green}{---> 59}\textcolor{ansi-red}{     tensors = pywrap\_tfe.TFE\_Py\_Execute(ctx.\_handle, device\_name, op\_name,
+}\textcolor{ansi-green-intense}{\textbf{     60}}                                         inputs, attrs, num\_outputs)
+\textcolor{ansi-green-intense}{\textbf{     61}}   \textcolor{ansi-green}{except} core\textcolor{ansi-blue}{.}\_NotOkStatusException \textcolor{ansi-green}{as} e\textcolor{ansi-blue}{:}
+
+\textcolor{ansi-red}{KeyboardInterrupt}: 
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{183}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{PlotModelEval}\PY{p}{(}\PY{n}{model}\PY{p}{,} \PY{n}{history}\PY{p}{,} \PY{n}{X\PYZus{}test}\PY{p}{,} \PY{n}{y\PYZus{}test}\PY{p}{,} \PY{n}{cifar\PYZus{}labels}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_51_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \textbf{Don't forget to save your model!}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{model}\PY{o}{.}\PY{n}{save}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{CompetionModel\PYZus{}}\PY{l+s+s2}{\PYZdq{}} \PY{o}{+} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Måns Aronsson manar189 \PYZam{} Niclas Hansson nicha207}\PY{l+s+s1}{\PYZsq{}} \PY{o}{+} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{.h5}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+
+\end{Verbatim}
+\end{tcolorbox}
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+\end{document}
