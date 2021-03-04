@@ -6,6 +6,7 @@ function P = getpolicy(Q)
 % operations. It's possible to implement this in one line of code.
 
 
-P = max(Q, [], 3);
+[~,P] = max(Q,[],3); 
+%action that gives the maximum Q
 end
 

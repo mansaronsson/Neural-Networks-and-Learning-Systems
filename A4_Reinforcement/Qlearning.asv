@@ -1,7 +1,8 @@
 %% Initialization
 %  Initialize the world, Q-table, and hyperparameters
 %Initialize world
-s = gwinit(1)
+world = 1;
+s = gwinit(world);
 Q = rand(s.ysize+2,s.xsize+2, 4);
 
 %setting positions outside the world (illegal moves) to minus infinity
@@ -11,24 +12,42 @@ Q(1,:,:) = -inf;
 Q(s.ysize+2,:,:) = -inf;
 
 %initialize hyperparameters
-episodes = 10; 
+episodes = 300; 
 a = [1,2,3,4];
 a_prob = [1,1,1,1];
-eta  = 0.3;
+eps = 1.0;
+eta  = 0.2;
 gamma = 0.9;
 
 %% Training loop
 %  Train the agent using the Q-learning algorithm.
+
 for i=1:episodes
-    while s.isvalid
+    i
+    while s.isterminal==0
         
+        %choose and take action
+        y = s.pos(1);
+        x = s.pos(2);
+        [action, oa] = chooseaction(Q, y, x, a, a_prob, eps);
+        s = gwaction(action);
         
+        %observe new state
+        r = s.feedback;
+        new_y = s.pos(1);
+        new_x = s.pos(2);
+        
+        %update Q
+        Q_max = getpolicy(Q);
+        Q(y,x,action) = (1-eta)*Q(y,x,action)+eta*(r+gamma*Q_max(new_y, new_x));
+        
+        gwdraw()
         
     end
+    %reset robot at new random position
+    eps = eps - 1/(episodes/2)
+    s = gwinit(world);
 end
-
-gwdraw();
-s=gwaction(2)
 
 %% Test loop
 %  Test the agent (subjectively) by letting it use the optimal policy
@@ -36,3 +55,17 @@ s=gwaction(2)
 %  Also, you should not explore when testing, i.e. epsilon=0; always pick
 %  the optimal action.
 
+s=gwinit(world);
+
+while s.isterminal==0
+        
+        %choose and take action
+        y = s.pos(1);
+        x = s.pos(2);
+        [action, oa] = chooseaction(Q, y, x, a, a_prob, eps);
+        s = gwaction(oa);
+
+        gwdraw()
+        
+end
+    %reset 
