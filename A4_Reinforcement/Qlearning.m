@@ -19,18 +19,20 @@ Q(:,1,4) = -inf;
 Q(:,end,3) = -inf;
 
 %initialize hyperparameters
-episodes = 3000; 
+episodes = 500; 
 a = [1,2,3,4];
 a_prob = [1,1,1,1];
-eps = 1.0;
-eta  = 0.5;
+eps_init = 1.0;
+eta_init  = 0.2;
 gamma = 0.9;
+gwdraw()
 
 %% Training loop
 %  Train the agent using the Q-learning algorithm.
-
+breakpoint = 2/3;
+eps = eps_init;
+eta = eta_init;
 for i=1:episodes
-  
     while s.isterminal==0
         
         %choose and take action
@@ -51,11 +53,17 @@ for i=1:episodes
         %gwdraw()
         
     end
-    %if i >2990
-     %   gwdraw()
-    %end
-    %reset robot at new random position
-    eps = eps - 1/(episodes);
+
+    
+    if i > breakpoint*episodes
+        
+        eps = eps-eps_init/(episodes*(1-breakpoint));
+        
+        %uncomment for world 1 and 3
+        eta = eta + eta_init/(breakpoint*episodes);
+
+    end
+
     s = gwinit(world);
 end
 
@@ -72,14 +80,25 @@ while s.isterminal==0
         %choose and take action
         y = s.pos(1);
         x = s.pos(2);
-        [action, oa] = chooseaction(Q, y, x, a, a_prob, eps);
+        [action, oa] = chooseaction(Q, y, x, a, a_prob, 0);
         s = gwaction(oa);
 
         gwdraw()
         
 end
-    %reset 
-%%
-
+%% Get policy and value
 P = getpolicy(Q);
-gwdrawpolicy(P)
+
+figure(1)
+gwdraw("episode", episodes, "policy", P)
+
+figure(2)
+V= getvalue(Q);
+imagesc(V)
+title("World 1 V-function")
+colorbar
+%% test moves
+
+s = gwaction(4);
+gwdraw()
+
