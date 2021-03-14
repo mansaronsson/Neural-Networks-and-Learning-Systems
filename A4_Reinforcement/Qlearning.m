@@ -22,8 +22,8 @@ Q(:,end,3) = -inf;
 episodes = 500; 
 a = [1,2,3,4];
 a_prob = [1,1,1,1];
-eps_init = 1.0;
-eta_init  = 0.2;
+eps_init = 0.9;
+eta_init  = 0.1;
 gamma = 0.9;
 gwdraw()
 
@@ -33,6 +33,7 @@ breakpoint = 2/3;
 eps = eps_init;
 eta = eta_init;
 for i=1:episodes
+    i
     while s.isterminal==0
         
         %choose and take action
