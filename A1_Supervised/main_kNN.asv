@@ -32,9 +32,9 @@ selectAtRandom = true;          % true = select samples at random, false = selec
 % XBinComb = combineBins(XBins, [1,2,3]);
 
 % Add your own code to setup data for training and test here
-maxK = 30;  % We will test 1 to maxK as values of k
-XTrain = combineBins(XBins, 1:numBins-numTestBins);
-LTrain = combineBins(LBins, 1:numBins-numTestBins);
+maxK = 5;  % We will test 1 to maxK as values of k
+XTrain = combineBins(XBins, numBins-numTestBins);
+LTrain = combineBins(LBins, numBins-numTestBins);
 XTest  = combineBins(XBins, numBins-numTestBins+1:numBins);
 LTest  = combineBins(LBins, numBins-numTestBins+1:numBins);
 
@@ -43,37 +43,30 @@ acc = zeros(numBins-numTestBins, maxK);
 for k=1:maxK
     for i=1:numBins-numTestBins
         
-        trainingRange = 1:numBins-numTestBins;
-        trainingRange(i) = [];
-        
-        XTrainBins = combineBins(XBins, trainingRange);
-        LTrainBins = combineBins(LBins, trainingRange);
-        XVal = XBins{i};
-        LVal = LBins{i};
-        
         % Classify training data
-        LPredBin = kNN(XVal, k, XTrainBins, LTrainBins);
+        LPred = kNN(XBins{i}, k, XTrain, LTrain);
 
         % The confucionMatrix
-        cM = calcConfusionMatrix(LPredBin, LVal);
+        cM = calcConfusionMatrix(LPred, LBins{i});
 
         % The accuracy
         acc(i,k) = calcAccuracy(cM);
     end
 end
 
-meanAcc = mean(acc);
-x = 1:maxK;
-figure, plot(x, meanAcc)
+x = 1:numBins-numTestBins;
+figure, plot(x, acc)
 title('Accuracy during training');
 xlabel('k');
 ylabel('Accuracy');
-[~,k] = max(meanAcc)
+[~,k] = max(acc)
 
-% Clssify the training data
-LPredTrain = kNN(XTrain, k, XTrain, LTrain);
+% Reassign to the training data the yielded the best tesult
+XTrain = bestXTrain;
+LTrain = bestLTrain;
+LPredTrain = bestLPredTrain;
 
-% Clssify the test data
+% Accuracy on test data
 LPredTest  = kNN(XTest , k, XTrain, LTrain);
 cM = calcConfusionMatrix(LPredTest, LTest);
 accuracy = calcAccuracy(cM)
