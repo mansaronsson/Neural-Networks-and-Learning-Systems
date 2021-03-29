@@ -23,13 +23,13 @@ episodes = 300;
 a = [1,2,3,4];
 a_prob = [1,1,1,1];
 eps_init = 1.0;
-eta_init  = 1.0;
+eta_init  = 0.1;
 gamma = 0.9;
 gwdraw()
 
 %% Training loop
 %  Train the agent using the Q-learning algorithm.
-breakpoint = 1;
+breakpoint = 2/3;
 eps = eps_init;
 eta = eta_init;
 tic;
@@ -58,14 +58,14 @@ for i=1:episodes
     end
 
     
-    if i > breakpoint*episodes
+    %if i > breakpoint*episodes
         
-        eps = eps-eps_init/(episodes*(1-breakpoint));
+        %eps = eps-eps_init/(episodes*(1-breakpoint));
         
         %uncomment for world 1 and 3
         %eta = eta + eta_init/(breakpoint*episodes);
 
-    end
+    %end
 
     s = gwinit(world);
 end
